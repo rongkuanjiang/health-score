@@ -1,0 +1,1274 @@
+{
+  "api_version": "1.0",
+  "package_version": "0.1.2",
+  "model_versions": {
+    "metabolism": "metabolism-v0.2-age-extension-unadjusted",
+    "organ-stress": "liver-kidney-v0.1-provisional",
+    "inflammation": "inflammation-v0.1-provisional",
+    "nutrition": "nutrition-v0.1-provisional",
+    "system-stability": "system-stability-v0.1-reference-summary"
+  },
+  "model_status": "preliminary_not_clinically_validated",
+  "overall_score": null,
+  "overall_score_status": "not_defined",
+  "evaluation_date": "2026-09-24",
+  "processing_status": "ok",
+  "domains": {
+    "metabolism": {
+      "processing_status": "ok",
+      "model_version": "metabolism-v0.2-age-extension-unadjusted",
+      "result": {
+        "model_version": "metabolism-v0.2-age-extension-unadjusted",
+        "model_status": "preliminary_not_clinically_validated",
+        "numerical_age_adjustment": false,
+        "numerical_sex_adjustment": false,
+        "status": "scored",
+        "score": 85.625,
+        "display_score": "85.6",
+        "flags": [
+          {
+            "code": "younger_age_extrapolation",
+            "text": "Experimental estimate for someone under 20: this uses unchanged adult scoring curves, has not been evaluated for this age group, and may be inaccurate. Pediatric reference ranges differ. Adult clinical labels are not applied; use the laboratory report and an age-appropriate clinical assessment."
+          },
+          {
+            "code": "ldl_limited_at_elevated_tg",
+            "text": "LDL alone has limitations at elevated triglycerides; ApoB/non-HDL remain context only.",
+            "marker": "ldl_c"
+          }
+        ],
+        "blocking_reasons": [],
+        "markers": {
+          "hba1c": {
+            "marker": "hba1c",
+            "version": "hba1c-v0.1-unadjusted",
+            "original": {
+              "value": 5.5,
+              "unit": "%",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "normalized_value": 5.5,
+            "normalized_unit": "%",
+            "score": 90.0,
+            "display_score": "90.0",
+            "status": "scored",
+            "reasons": [],
+            "flags": [],
+            "report_id": "synthetic-report",
+            "source_id": null,
+            "specimen_date": "2026-09-01",
+            "interpretation": []
+          },
+          "ldl_c": {
+            "marker": "ldl_c",
+            "version": "metabolism-v0.2-age-extension-unadjusted",
+            "original": {
+              "value": 3.0,
+              "unit": "mmol/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "normalized_value": 3.0,
+            "normalized_unit": "mmol/L",
+            "score": 80.0,
+            "display_score": "80.0",
+            "status": "scored",
+            "reasons": [],
+            "flags": [
+              {
+                "code": "ldl_limited_at_elevated_tg",
+                "text": "LDL alone has limitations at elevated triglycerides; ApoB/non-HDL remain context only."
+              }
+            ],
+            "report_id": "synthetic-report",
+            "source_id": null,
+            "specimen_date": "2026-09-01",
+            "interpretation": [
+              "LDL alone has limitations at elevated triglycerides; ApoB/non-HDL remain context only."
+            ]
+          },
+          "triglycerides": {
+            "marker": "triglycerides",
+            "version": "metabolism-v0.2-age-extension-unadjusted",
+            "original": {
+              "value": 1.7,
+              "unit": "mmol/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "normalized_value": 1.7,
+            "normalized_unit": "mmol/L",
+            "score": 80.0,
+            "display_score": "80.0",
+            "status": "scored",
+            "reasons": [],
+            "flags": [],
+            "report_id": "synthetic-report",
+            "source_id": null,
+            "specimen_date": "2026-09-01",
+            "interpretation": []
+          },
+          "hdl_c": {
+            "marker": "hdl_c",
+            "version": "metabolism-v0.2-age-extension-unadjusted",
+            "original": {
+              "value": 1.3,
+              "unit": "mmol/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "normalized_value": 1.3,
+            "normalized_unit": "mmol/L",
+            "score": 85.0,
+            "display_score": "85.0",
+            "status": "scored",
+            "reasons": [],
+            "flags": [],
+            "report_id": "synthetic-report",
+            "source_id": null,
+            "specimen_date": "2026-09-01",
+            "interpretation": []
+          }
+        },
+        "components": {
+          "blood_sugar": {
+            "score": 90.0,
+            "display_score": "90.0",
+            "status": "scored",
+            "blocked_prerequisites": []
+          },
+          "triglycerides_hdl": {
+            "score": 82.5,
+            "display_score": "82.5",
+            "status": "scored",
+            "blocked_prerequisites": []
+          },
+          "lipid_health": {
+            "score": 81.25,
+            "display_score": "81.3",
+            "status": "scored",
+            "blocked_prerequisites": []
+          }
+        },
+        "coverage": {
+          "scored": 4,
+          "required": 4
+        },
+        "snapshot_date": "2026-09-01",
+        "alternative_nonfasting": null,
+        "optional_context": {},
+        "provenance": {
+          "snapshot_id": "synthetic-intermediate-example",
+          "person": {
+            "age": 16,
+            "pregnancy_status": "no",
+            "sex_reference": "female"
+          },
+          "context": {
+            "fasting_status": "fasting",
+            "ldl_method": "direct",
+            "hba1c_interference": "no"
+          },
+          "observations": {
+            "hba1c": {
+              "value": 5.5,
+              "unit": "%",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "ldl_c": {
+              "value": 3.0,
+              "unit": "mmol/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "triglycerides": {
+              "value": 1.7,
+              "unit": "mmol/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "hdl_c": {
+              "value": 1.3,
+              "unit": "mmol/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            }
+          }
+        },
+        "age_applicability": "younger_age_extrapolation",
+        "fasting_status": "fasting"
+      }
+    },
+    "organ-stress": {
+      "processing_status": "ok",
+      "model_version": "liver-kidney-v0.1-provisional",
+      "result": {
+        "model_version": "liver-kidney-v0.1-provisional",
+        "model_status": "preliminary_not_clinically_validated",
+        "domain_score": null,
+        "display_score": null,
+        "aggregation_status": "aggregation_not_defined",
+        "reasons": [
+          "aggregation_not_defined"
+        ],
+        "flags": [
+          {
+            "code": "pediatric_points_not_defined",
+            "text": "Age-appropriate estimates may be shown, but pediatric wellness points are not defined."
+          },
+          {
+            "code": "preliminary_points",
+            "text": "Points are unvalidated modeling choices, not organ-function percentages or disease probabilities."
+          },
+          {
+            "code": "limited_organ_coverage",
+            "text": "These components do not assess complete organ health. Normal enzymes or high points do not exclude disease."
+          },
+          {
+            "code": "uacr_missing_or_unusable",
+            "text": "Urine albumin information is missing or unusable; kidney-damage coverage is incomplete."
+          },
+          {
+            "code": "alt_above_upper_limit",
+            "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity."
+          }
+        ],
+        "provenance": {
+          "snapshot_id": "synthetic-liver-kidney-example",
+          "person": {
+            "age": 16,
+            "equation_sex": "male",
+            "pregnancy_status": "not_pregnant"
+          },
+          "context": {
+            "dialysis": "no",
+            "acute_kidney_injury": "no"
+          },
+          "observations": {
+            "egfr": {
+              "value": 75,
+              "unit": "mL/min/1.73m2",
+              "qualifier": "=",
+              "equation": "ckd_epi_2021_creatinine",
+              "reliability": "valid",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01"
+            },
+            "alt": {
+              "value": 80,
+              "unit": "U/L",
+              "lower_limit": 5,
+              "upper_limit": 40,
+              "reference_range_applicable": true,
+              "reliability": "valid",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01"
+            },
+            "ast": {
+              "value": 40,
+              "unit": "U/L",
+              "lower_limit": 5,
+              "upper_limit": 40,
+              "reference_range_applicable": true,
+              "reliability": "valid",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01"
+            }
+          }
+        },
+        "components": {
+          "kidney": {
+            "score": null,
+            "display_score": null,
+            "status": "equation_age_outside_scope",
+            "reasons": [
+              "equation_age_outside_scope",
+              "pediatric_points_not_defined"
+            ],
+            "flags": [
+              {
+                "code": "uacr_missing_or_unusable",
+                "text": "Urine albumin information is missing or unusable; kidney-damage coverage is incomplete."
+              }
+            ],
+            "route": "reported",
+            "equation": "ckd_epi_2021_creatinine",
+            "egfr": null,
+            "egfr_bound": null,
+            "score_envelope": null,
+            "markers": {
+              "egfr": {
+                "score": null,
+                "display_score": null,
+                "status": "equation_age_outside_scope",
+                "reasons": [
+                  "equation_age_outside_scope"
+                ],
+                "flags": [],
+                "observation": {
+                  "value": 75,
+                  "unit": "mL/min/1.73m2",
+                  "qualifier": "=",
+                  "equation": "ckd_epi_2021_creatinine",
+                  "reliability": "valid",
+                  "report_id": "synthetic-report",
+                  "specimen_date": "2026-09-01"
+                },
+                "normalized_value": 75,
+                "normalized_unit": "mL/min/1.73m2",
+                "qualifier": "=",
+                "specimen_age_days": 23,
+                "available": true,
+                "usable_for_estimation": false
+              }
+            },
+            "coverage": {
+              "selected_input": "egfr",
+              "available": true,
+              "usable_for_estimation": false,
+              "missing_or_unusable": [
+                "equation_age_outside_scope"
+              ],
+              "usable_for_points": false,
+              "point_blocking_reasons": [
+                "equation_age_outside_scope",
+                "pediatric_points_not_defined"
+              ]
+            }
+          },
+          "liver": {
+            "score": null,
+            "display_score": null,
+            "status": "alt_unavailable",
+            "reasons": [
+              "alt_unavailable",
+              "ast_unavailable",
+              "pediatric_points_not_defined"
+            ],
+            "flags": [
+              {
+                "code": "alt_above_upper_limit",
+                "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity."
+              }
+            ],
+            "markers": {
+              "alt": {
+                "score": null,
+                "display_score": null,
+                "status": "pediatric_points_not_defined",
+                "reasons": [
+                  "pediatric_points_not_defined"
+                ],
+                "flags": [
+                  {
+                    "code": "alt_above_upper_limit",
+                    "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity."
+                  }
+                ],
+                "observation": {
+                  "value": 80,
+                  "unit": "U/L",
+                  "lower_limit": 5,
+                  "upper_limit": 40,
+                  "reference_range_applicable": true,
+                  "reliability": "valid",
+                  "report_id": "synthetic-report",
+                  "specimen_date": "2026-09-01"
+                },
+                "normalized_value": 80,
+                "normalized_unit": "U/L",
+                "qualifier": "=",
+                "specimen_age_days": 23,
+                "available": true,
+                "upper_limit_ratio": 2.0
+              },
+              "ast": {
+                "score": null,
+                "display_score": null,
+                "status": "pediatric_points_not_defined",
+                "reasons": [
+                  "pediatric_points_not_defined"
+                ],
+                "flags": [],
+                "observation": {
+                  "value": 40,
+                  "unit": "U/L",
+                  "lower_limit": 5,
+                  "upper_limit": 40,
+                  "reference_range_applicable": true,
+                  "reliability": "valid",
+                  "report_id": "synthetic-report",
+                  "specimen_date": "2026-09-01"
+                },
+                "normalized_value": 40,
+                "normalized_unit": "U/L",
+                "qualifier": "=",
+                "specimen_age_days": 23,
+                "available": true,
+                "upper_limit_ratio": 1.0
+              }
+            },
+            "coverage": {
+              "available": 2,
+              "required": 2,
+              "scored": 0,
+              "missing_or_unusable": {
+                "alt": [
+                  "pediatric_points_not_defined"
+                ],
+                "ast": [
+                  "pediatric_points_not_defined"
+                ]
+              },
+              "group_blocking_reasons": [
+                "alt_unavailable",
+                "ast_unavailable",
+                "pediatric_points_not_defined"
+              ]
+            }
+          }
+        },
+        "optional_context": {
+          "alp": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "bilirubin": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "ggt": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "albumin": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "bun": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "uric_acid": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "uacr": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          },
+          "cystatin_c": {
+            "score": null,
+            "display_score": null,
+            "status": "missing",
+            "reasons": [
+              "missing"
+            ],
+            "flags": [],
+            "observation": null,
+            "normalized_value": null,
+            "normalized_unit": null,
+            "qualifier": null,
+            "specimen_age_days": null,
+            "available": false,
+            "usable_for_display": false
+          }
+        },
+        "coverage": {
+          "kidney": {
+            "selected_input": "egfr",
+            "available": true,
+            "usable_for_estimation": false,
+            "missing_or_unusable": [
+              "equation_age_outside_scope"
+            ],
+            "usable_for_points": false,
+            "point_blocking_reasons": [
+              "equation_age_outside_scope",
+              "pediatric_points_not_defined"
+            ]
+          },
+          "liver": {
+            "available": 2,
+            "required": 2,
+            "scored": 0,
+            "missing_or_unusable": {
+              "alt": [
+                "pediatric_points_not_defined"
+              ],
+              "ast": [
+                "pediatric_points_not_defined"
+              ]
+            },
+            "group_blocking_reasons": [
+              "alt_unavailable",
+              "ast_unavailable",
+              "pediatric_points_not_defined"
+            ]
+          },
+          "context": {
+            "alp": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "bilirubin": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "ggt": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "albumin": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "bun": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "uric_acid": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "uacr": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            },
+            "cystatin_c": {
+              "available": false,
+              "usable_for_display": false,
+              "reasons": [
+                "missing"
+              ]
+            }
+          }
+        },
+        "status": "unavailable"
+      }
+    },
+    "inflammation": {
+      "processing_status": "ok",
+      "model_version": "inflammation-v0.1-provisional",
+      "result": {
+        "model_version": "inflammation-v0.1-provisional",
+        "domain_label": "Inflammation markers",
+        "evaluation_date": "2026-09-24",
+        "input": {
+          "person": {
+            "age": 16,
+            "pregnancy_status": "not_pregnant"
+          },
+          "context": {
+            "acute_context": "absent",
+            "chronic_inflammatory_condition": "absent",
+            "inflammation_affecting_treatment": "absent"
+          },
+          "observations": {
+            "hs_crp": {
+              "observation_id": "synthetic-hscrp",
+              "value": 2,
+              "unit": "mg/L",
+              "assay_type": "hs_crp",
+              "qualifier": "=",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "wbc": {
+              "value": 12,
+              "unit": "10^9/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 4,
+              "upper_limit": 11,
+              "reference_range_applicable": true,
+              "lab_flag": "High (synthetic example range)"
+            }
+          }
+        },
+        "domain_score": null,
+        "domain_aggregation_status": "limited_marker_coverage",
+        "status": "context_only",
+        "components": {
+          "hs_crp": {
+            "score": null,
+            "display_score": null,
+            "status": "unavailable",
+            "reasons": [
+              "pediatric_points_not_defined"
+            ],
+            "notices": [
+              {
+                "code": "hs_crp_risk_enhancer",
+                "text": "hs-CRP is at least 2 mg/L, a cardiovascular risk-enhancing finding; this is not an individual risk estimate."
+              },
+              {
+                "code": "single_measurement_not_persistent_inflammation",
+                "text": "One selected measurement cannot establish persistent inflammation."
+              }
+            ],
+            "observation_id": "synthetic-hscrp"
+          }
+        },
+        "observations": [
+          {
+            "marker": "hs_crp",
+            "observation_id": "synthetic-hscrp",
+            "observation": {
+              "observation_id": "synthetic-hscrp",
+              "value": 2,
+              "unit": "mg/L",
+              "assay_type": "hs_crp",
+              "qualifier": "=",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "normalized_value": 2,
+            "normalized_unit": "mg/L",
+            "qualifier": "=",
+            "specimen_age_days": 23,
+            "errors": [],
+            "metadata_reasons": [],
+            "notices": [
+              {
+                "code": "hs_crp_risk_enhancer",
+                "text": "hs-CRP is at least 2 mg/L, a cardiovascular risk-enhancing finding; this is not an individual risk estimate."
+              }
+            ],
+            "reference_status": "unavailable",
+            "valid_measurement": true
+          },
+          {
+            "marker": "wbc",
+            "observation_id": "wbc:0",
+            "observation": {
+              "value": 12,
+              "unit": "10^9/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 4,
+              "upper_limit": 11,
+              "reference_range_applicable": true,
+              "lab_flag": "High (synthetic example range)"
+            },
+            "normalized_value": 12,
+            "normalized_unit": "10^9/L",
+            "qualifier": "=",
+            "specimen_age_days": 23,
+            "errors": [],
+            "metadata_reasons": [],
+            "notices": [
+              {
+                "code": "laboratory_flag",
+                "text": "High (synthetic example range)"
+              },
+              {
+                "code": "outside_reference_range",
+                "text": "Result is high relative to the supplied applicable laboratory range."
+              }
+            ],
+            "reference_status": "high",
+            "valid_measurement": true
+          }
+        ],
+        "coverage": {
+          "hs_crp_present": true,
+          "hs_crp_usable": false,
+          "missing_requirements": [
+            "pediatric_points_not_defined"
+          ],
+          "context_markers_present": [
+            "wbc"
+          ]
+        },
+        "notices": [
+          {
+            "code": "limited_marker_coverage",
+            "text": "This component does not measure all inflammation or immune function."
+          },
+          {
+            "code": "provisional_points",
+            "text": "Experimental points are not clinically validated or a disease probability."
+          }
+        ]
+      }
+    },
+    "nutrition": {
+      "processing_status": "ok",
+      "model_version": "nutrition-v0.1-provisional",
+      "result": {
+        "model_version": "nutrition-v0.1-provisional",
+        "domain_label": "Nutrition markers",
+        "evaluation_date": "2026-09-24",
+        "input": {
+          "evaluation_date": "2026-09-24",
+          "person": {
+            "age": 16,
+            "pregnancy_status": "not_pregnant"
+          },
+          "context": {
+            "vitamin_d_supplementation": "unknown",
+            "vitamin_d_treatment": "absent",
+            "relevant_conditions": "unknown"
+          },
+          "observations": {
+            "vitamin_d": {
+              "observation_id": "synthetic-vitamin-d",
+              "analyte": "total_25_hydroxyvitamin_d",
+              "value": 40,
+              "unit": "nmol/L",
+              "qualifier": "=",
+              "specimen_type": "serum",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "albumin": {
+              "observation_id": "synthetic-albumin",
+              "value": 32,
+              "unit": "g/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 35,
+              "upper_limit": 50,
+              "reference_range_applicable": true,
+              "lab_flag": "Low (synthetic example range)"
+            }
+          }
+        },
+        "domain_score": null,
+        "domain_aggregation_status": "limited_marker_coverage",
+        "status": "unavailable",
+        "components": {
+          "vitamin_d": {
+            "score": null,
+            "display_score": null,
+            "status": "unavailable",
+            "reasons": [
+              "pediatric_points_not_defined"
+            ],
+            "notices": [
+              {
+                "code": "vitamin_d_supplementation_unknown",
+                "text": "Vitamin d supplementation is unknown; points are not adjusted."
+              },
+              {
+                "code": "relevant_conditions_unknown",
+                "text": "Relevant conditions is unknown; points are not adjusted."
+              },
+              {
+                "code": "reference_interpretation_unavailable",
+                "text": "An applicable exact-result laboratory reference comparison is unavailable."
+              }
+            ],
+            "observation_id": "synthetic-vitamin-d"
+          }
+        },
+        "observations": [
+          {
+            "marker": "vitamin_d",
+            "observation_id": "synthetic-vitamin-d",
+            "observation": {
+              "observation_id": "synthetic-vitamin-d",
+              "analyte": "total_25_hydroxyvitamin_d",
+              "value": 40,
+              "unit": "nmol/L",
+              "qualifier": "=",
+              "specimen_type": "serum",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid"
+            },
+            "normalized_value": 40,
+            "normalized_unit": "nmol/L",
+            "qualifier": "=",
+            "specimen_age_days": 23,
+            "errors": [],
+            "metadata_reasons": [],
+            "reliability_reasons": [],
+            "notices": [
+              {
+                "code": "reference_interpretation_unavailable",
+                "text": "An applicable exact-result laboratory reference comparison is unavailable."
+              }
+            ],
+            "reference_status": "unavailable",
+            "valid_measurement": true
+          },
+          {
+            "marker": "albumin",
+            "observation_id": "synthetic-albumin",
+            "observation": {
+              "observation_id": "synthetic-albumin",
+              "value": 32,
+              "unit": "g/L",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 35,
+              "upper_limit": 50,
+              "reference_range_applicable": true,
+              "lab_flag": "Low (synthetic example range)"
+            },
+            "normalized_value": 32,
+            "normalized_unit": "g/L",
+            "qualifier": "=",
+            "specimen_age_days": 23,
+            "errors": [],
+            "metadata_reasons": [],
+            "reliability_reasons": [],
+            "notices": [
+              {
+                "code": "laboratory_flag",
+                "text": "Low (synthetic example range)"
+              },
+              {
+                "code": "outside_reference_range",
+                "text": "Result is low relative to the supplied applicable laboratory range."
+              }
+            ],
+            "reference_status": "low",
+            "valid_measurement": true
+          }
+        ],
+        "coverage": {
+          "scored_component_count": 0,
+          "defined_component_count": 1,
+          "available": [
+            {
+              "marker": "albumin",
+              "observation_id": "synthetic-albumin",
+              "observation_index": 1,
+              "reasons": []
+            }
+          ],
+          "unusable": [
+            {
+              "marker": "vitamin_d",
+              "observation_id": "synthetic-vitamin-d",
+              "observation_index": 0,
+              "reasons": [
+                "pediatric_points_not_defined"
+              ]
+            }
+          ],
+          "missing": [],
+          "missing_requirements": [
+            "pediatric_points_not_defined"
+          ]
+        },
+        "notices": [
+          {
+            "code": "limited_nutrition_coverage",
+            "text": "This component does not measure overall nutrition or diet quality."
+          },
+          {
+            "code": "provisional_points",
+            "text": "Experimental points are not clinically validated or a disease probability."
+          }
+        ]
+      }
+    },
+    "system-stability": {
+      "processing_status": "ok",
+      "model_version": "system-stability-v0.1-reference-summary",
+      "result": {
+        "model_version": "system-stability-v0.1-reference-summary",
+        "domain_label": "System Stability",
+        "result_label": "Electrolyte balance at collection",
+        "domain_score": null,
+        "domain_aggregation_status": "not_defined_reference_summary_only",
+        "panel_status": "all_within_reference",
+        "evaluation_date": "2026-09-24",
+        "selection": {
+          "report_id": "synthetic-report-1",
+          "specimen_id": "synthetic-specimen-1",
+          "specimen_date": "2026-09-20",
+          "observation_ids": {
+            "sodium": "na-1",
+            "potassium": "k-1",
+            "chloride": "cl-1",
+            "total_co2": "co2-1"
+          }
+        },
+        "request": {
+          "example_note": "Synthetic acceptance fixture. These reference intervals are not clinical defaults.",
+          "person": {
+            "age": 16,
+            "pregnancy_status": "not_applicable"
+          },
+          "selection": {
+            "report_id": "synthetic-report-1",
+            "specimen_id": "synthetic-specimen-1",
+            "specimen_date": "2026-09-20",
+            "observation_ids": {
+              "sodium": "na-1",
+              "potassium": "k-1",
+              "chloride": "cl-1",
+              "total_co2": "co2-1"
+            }
+          },
+          "observations": {
+            "sodium": {
+              "observation_id": "na-1",
+              "raw_analyte_name": "Sodium",
+              "value": 140,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 135,
+              "upper_limit": 145,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "potassium": {
+              "observation_id": "k-1",
+              "raw_analyte_name": "Potassium",
+              "value": 4,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 3.5,
+              "upper_limit": 5,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "chloride": {
+              "observation_id": "cl-1",
+              "raw_analyte_name": "Chloride",
+              "value": 102,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 98,
+              "upper_limit": 107,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "total_co2": {
+              "observation_id": "co2-1",
+              "raw_analyte_name": "Total CO2",
+              "value": 25,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 22,
+              "upper_limit": 29,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "assay_type": "chemistry_total_co2",
+              "reliability": "not_flagged",
+              "source_flags": []
+            }
+          }
+        },
+        "coverage": {
+          "present_count": 4,
+          "interpretable_count": 4,
+          "expected_count": 4,
+          "missing_markers": [],
+          "uninterpretable_markers": []
+        },
+        "reasons": [],
+        "notices": [
+          {
+            "code": "single_collection_not_temporal_stability",
+            "marker": null,
+            "observation_id": null,
+            "selected": null
+          }
+        ],
+        "observations": [
+          {
+            "marker": "sodium",
+            "observation_id": "na-1",
+            "selected": true,
+            "observation": {
+              "observation_id": "na-1",
+              "raw_analyte_name": "Sodium",
+              "value": 140,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 135,
+              "upper_limit": 145,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "score": null,
+            "normalized_value": 140.0,
+            "normalized_unit": "mmol/L",
+            "normalized_lower_limit": 135.0,
+            "normalized_upper_limit": 145.0,
+            "qualifier": "=",
+            "specimen_age_days": 4,
+            "reference_status": "within_reference",
+            "classification_basis": "derived",
+            "source_flags": [],
+            "errors": [],
+            "reasons": [],
+            "notices": []
+          },
+          {
+            "marker": "potassium",
+            "observation_id": "k-1",
+            "selected": true,
+            "observation": {
+              "observation_id": "k-1",
+              "raw_analyte_name": "Potassium",
+              "value": 4,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 3.5,
+              "upper_limit": 5,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "score": null,
+            "normalized_value": 4.0,
+            "normalized_unit": "mmol/L",
+            "normalized_lower_limit": 3.5,
+            "normalized_upper_limit": 5.0,
+            "qualifier": "=",
+            "specimen_age_days": 4,
+            "reference_status": "within_reference",
+            "classification_basis": "derived",
+            "source_flags": [],
+            "errors": [],
+            "reasons": [],
+            "notices": []
+          },
+          {
+            "marker": "chloride",
+            "observation_id": "cl-1",
+            "selected": true,
+            "observation": {
+              "observation_id": "cl-1",
+              "raw_analyte_name": "Chloride",
+              "value": 102,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 98,
+              "upper_limit": 107,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "score": null,
+            "normalized_value": 102.0,
+            "normalized_unit": "mmol/L",
+            "normalized_lower_limit": 98.0,
+            "normalized_upper_limit": 107.0,
+            "qualifier": "=",
+            "specimen_age_days": 4,
+            "reference_status": "within_reference",
+            "classification_basis": "derived",
+            "source_flags": [],
+            "errors": [],
+            "reasons": [],
+            "notices": []
+          },
+          {
+            "marker": "total_co2",
+            "observation_id": "co2-1",
+            "selected": true,
+            "observation": {
+              "observation_id": "co2-1",
+              "raw_analyte_name": "Total CO2",
+              "value": 25,
+              "unit": "mmol/L",
+              "qualifier": "=",
+              "lower_limit": 22,
+              "upper_limit": 29,
+              "reference_unit": "mmol/L",
+              "reference_applicability": "confirmed",
+              "reference_provenance": "Synthetic fixture interval, not a patient reference",
+              "report_id": "synthetic-report-1",
+              "specimen_id": "synthetic-specimen-1",
+              "specimen_date": "2026-09-20",
+              "specimen_type": "serum",
+              "assay_type": "chemistry_total_co2",
+              "reliability": "not_flagged",
+              "source_flags": []
+            },
+            "score": null,
+            "normalized_value": 25.0,
+            "normalized_unit": "mmol/L",
+            "normalized_lower_limit": 22.0,
+            "normalized_upper_limit": 29.0,
+            "qualifier": "=",
+            "specimen_age_days": 4,
+            "reference_status": "within_reference",
+            "classification_basis": "derived",
+            "source_flags": [],
+            "errors": [],
+            "reasons": [],
+            "notices": []
+          }
+        ],
+        "context_observations": [],
+        "unsupported_observations": []
+      }
+    }
+  }
+}

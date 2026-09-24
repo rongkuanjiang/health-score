@@ -1,0 +1,48 @@
+{
+  "example_note": "Synthetic acceptance fixture. These reference intervals are not clinical defaults.",
+  "person": {"age": 40, "pregnancy_status": "not_applicable"},
+  "selection": {
+    "report_id": "synthetic-report-1",
+    "specimen_id": "synthetic-specimen-1",
+    "specimen_date": "2026-09-20",
+    "observation_ids": {"sodium": "na-1", "potassium": "k-1", "chloride": "cl-1", "total_co2": "co2-1"}
+  },
+  "observations": {
+    "sodium": {
+      "observation_id": "na-1", "raw_analyte_name": "Sodium", "value": 140,
+      "unit": "mmol/L", "qualifier": "=", "lower_limit": 135, "upper_limit": 145,
+      "reference_unit": "mmol/L", "reference_applicability": "confirmed",
+      "reference_provenance": "Synthetic fixture interval, not a patient reference",
+      "report_id": "synthetic-report-1", "specimen_id": "synthetic-specimen-1",
+      "specimen_date": "2026-09-20", "specimen_type": "serum",
+      "reliability": "not_flagged", "source_flags": []
+    },
+    "potassium": {
+      "observation_id": "k-1", "raw_analyte_name": "Potassium", "value": 4,
+      "unit": "mmol/L", "qualifier": "=", "lower_limit": 3.5, "upper_limit": 5,
+      "reference_unit": "mmol/L", "reference_applicability": "confirmed",
+      "reference_provenance": "Synthetic fixture interval, not a patient reference",
+      "report_id": "synthetic-report-1", "specimen_id": "synthetic-specimen-1",
+      "specimen_date": "2026-09-20", "specimen_type": "serum",
+      "reliability": "not_flagged", "source_flags": []
+    },
+    "chloride": {
+      "observation_id": "cl-1", "raw_analyte_name": "Chloride", "value": 102,
+      "unit": "mmol/L", "qualifier": "=", "lower_limit": 98, "upper_limit": 107,
+      "reference_unit": "mmol/L", "reference_applicability": "confirmed",
+      "reference_provenance": "Synthetic fixture interval, not a patient reference",
+      "report_id": "synthetic-report-1", "specimen_id": "synthetic-specimen-1",
+      "specimen_date": "2026-09-20", "specimen_type": "serum",
+      "reliability": "not_flagged", "source_flags": []
+    },
+    "total_co2": {
+      "observation_id": "co2-1", "raw_analyte_name": "Total CO2", "value": 25,
+      "unit": "mmol/L", "qualifier": "=", "lower_limit": 22, "upper_limit": 29,
+      "reference_unit": "mmol/L", "reference_applicability": "confirmed",
+      "reference_provenance": "Synthetic fixture interval, not a patient reference",
+      "report_id": "synthetic-report-1", "specimen_id": "synthetic-specimen-1",
+      "specimen_date": "2026-09-20", "specimen_type": "serum",
+      "assay_type": "chemistry_total_co2", "reliability": "not_flagged", "source_flags": []
+    }
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "model_version": "metabolism-v0.2-age-extension-unadjusted",
+  "status": "implemented_provisional_not_clinically_validated",
+  "specification": "METABOLISM_V01_SPEC.md",
+  "minimum_age_exclusive": 0,
+  "adult_reference_minimum_age": 20,
+  "older_age_notice_from": 85,
+  "pregnancy_gate": {"yes": "outside_scope_no_interpretation", "unknown_or_missing": "eligibility_required_no_interpretation", "no_or_not_applicable": "eligible"},
+  "numerical_age_adjustment": false,
+  "numerical_sex_adjustment": false,
+  "required_markers": ["hba1c", "ldl_c", "triglycerides", "hdl_c"],
+  "effective_weights": {"hba1c": 0.5, "ldl_c": 0.25, "triglycerides": 0.125, "hdl_c": 0.125},
+  "maximum_specimen_gap_days": 90,
+  "curves": {
+    "hba1c": {
+      "unit": "%",
+      "anchors": [[4,100],[5,100],[5.5,90],[6,70],[6.5,50],[8,25],[10,10]],
+      "below_first_anchor": "unscored",
+      "above_last_anchor": {"type": "exponential_halving", "interval": 2}
+    },
+    "ldl_c": {
+      "unit": "mmol/L",
+      "anchors": [[2,100],[3,80],[3.5,65],[5,30],[7,10]],
+      "below_first_anchor": "plateau_for_positive_values",
+      "above_last_anchor": {"type": "exponential_halving", "interval": 2}
+    },
+    "triglycerides": {
+      "unit": "mmol/L",
+      "fasting_required": false,
+      "supported_states": ["fasting", "nonfasting", "unknown"],
+      "anchors_apply_to": "fasting_and_unknown_primary",
+      "nonfasting_anchors": [[1,100],[2,80],[2.3,60],[4.5,30],[5.6,20],[10,5]],
+      "unknown_policy": "fasting_curve_primary_with_nonfasting_alternative_and_notice",
+      "anchors": [[1,100],[1.7,80],[2.3,60],[4.5,30],[5.6,20],[10,5]],
+      "below_first_anchor": "plateau_for_positive_values",
+      "above_last_anchor": {"type": "exponential_halving", "interval": 5}
+    },
+    "hdl_c": {
+      "unit": "mmol/L",
+      "anchors": [[0.5,10],[0.8,40],[1,60],[1.3,85],[1.5,100]],
+      "below_first_anchor": {"type": "scaled_power", "exponent": 2},
+      "above_last_anchor": "plateau_until_exclusive_upper_coverage",
+      "exclusive_upper_coverage": 2.5
+    }
+  },
+  "conversion_factors": {
+    "cholesterol_mg_dl_to_mmol_l": 0.02586,
+    "triglycerides_mg_dl_to_mmol_l": 0.01129,
+    "hba1c_ifcc_to_ngsp_slope": 0.09148,
+    "hba1c_ifcc_to_ngsp_intercept": 2.152,
+    "apob_mg_dl_to_g_l": 0.01
+  },
+  "friedewald_tg_exclusive_upper_mmol_l": 4.516,
+  "notes": [
+    "All numerical score ordinates, tail shapes, plateaus and weights are provisional design choices.",
+    "Eligibility, flags, dates, status precedence and optional context are specified in the accompanying document; this file alone is not a complete scoring engine.",
+    "Clinical sex-specific HDL flags are separate from the common numerical HDL curve.",
+    "All continuous-domain values must first be validated as finite positive numbers, excluding booleans."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "person": {"age": 40, "pregnancy_status": "not_pregnant"},
+  "context": {
+    "acute_context": "absent",
+    "chronic_inflammatory_condition": "absent",
+    "inflammation_affecting_treatment": "absent"
+  },
+  "observations": {
+    "hs_crp": {
+      "observation_id": "synthetic-hscrp",
+      "value": 2,
+      "unit": "mg/L",
+      "assay_type": "hs_crp",
+      "qualifier": "=",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01",
+      "reliability": "valid"
+    },
+    "wbc": {
+      "value": 12,
+      "unit": "10^9/L",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01",
+      "reliability": "valid",
+      "lower_limit": 4,
+      "upper_limit": 11,
+      "reference_range_applicable": true,
+      "lab_flag": "High (synthetic example range)"
+    }
+  }
+}

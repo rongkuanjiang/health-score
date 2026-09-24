@@ -1,3 +1,45 @@
+# Health scorer dashboard
+
+The current five-domain dashboard is in [new_scoring_NHANES_inspired](new_scoring_NHANES_inspired/). It includes the initial questionnaire, optional wearable step data, bloodwork entry, scores and charts. This is a research prototype, not a clinically validated health assessment.
+
+## Run the dashboard
+
+1. Clone this repository, or choose **Code > Download ZIP** and extract it.
+2. Install Python 3.10 or newer if needed.
+3. Open a terminal in the repository folder and run:
+
+```bash
+cd new_scoring_NHANES_inspired
+python dashboard_server.py
+```
+
+On Windows, `py dashboard_server.py` also works if Python is installed through the launcher.
+
+4. Open **http://127.0.0.1:8765** in your browser. Keep the terminal running; press Ctrl+C to stop the server.
+5. Complete the questionnaire, then enter your biomarkers or choose **Try a full example** for synthetic demonstration data.
+
+The dashboard uses only the Python standard library. No pip installation, Node, database or frontend build is needed. The root `requirements.txt` applies only to the legacy scorer below. Entries last for the open page; reloading clears them. Wearable entries are manual, with no device connection.
+
+GitHub stores the source code here; run the Python server to use the dashboard. Opening `index.html` directly will not run the scoring API.
+
+See [dashboard notes](new_scoring_NHANES_inspired/DASHBOARD_README.md) and [integration instructions](new_scoring_NHANES_inspired/INTEGRATION_HANDOFF.md) for details. No overall health score is defined by the new dashboard.
+
+## Checks
+
+From `new_scoring_NHANES_inspired`, run:
+
+```bash
+python -m unittest discover -s . -p "test_*.py"
+```
+
+The shared package passed 118 Python tests and its JavaScript integration checks before upload. Rendered browser layout review remains outstanding.
+
+---
+
+## Legacy scorer
+
+The original scorer remains below and in the repository root. Its four-domain combined score is a separate historical implementation.
+
 # Wellness Health Scorer
 
 A Python module that converts a routine blood panel into a 0–100 health score with four interpretable domains. This is the 16-marker version of the score, packaged for integration testing. It is a single file with no external services and no data files, depending only on NumPy and pandas.

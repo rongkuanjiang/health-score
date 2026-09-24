@@ -1,0 +1,222 @@
+{
+  "api_version": "1.0",
+  "evaluation_date": "2026-09-24",
+  "domains": {
+    "metabolism": {
+      "snapshot_id": "synthetic-intermediate-example",
+      "person": {
+        "age": 40,
+        "pregnancy_status": "no",
+        "sex_reference": "female"
+      },
+      "context": {
+        "fasting_status": "fasting",
+        "ldl_method": "direct",
+        "hba1c_interference": "no"
+      },
+      "observations": {
+        "hba1c": {
+          "value": 5.5,
+          "unit": "%",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid"
+        },
+        "ldl_c": {
+          "value": 3.0,
+          "unit": "mmol/L",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid"
+        },
+        "triglycerides": {
+          "value": 1.7,
+          "unit": "mmol/L",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid"
+        },
+        "hdl_c": {
+          "value": 1.3,
+          "unit": "mmol/L",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid"
+        }
+      }
+    },
+    "organ-stress": {
+      "snapshot_id": "synthetic-liver-kidney-example",
+      "person": {
+        "age": 40,
+        "equation_sex": "male",
+        "pregnancy_status": "not_pregnant"
+      },
+      "context": {
+        "dialysis": "no",
+        "acute_kidney_injury": "no"
+      },
+      "observations": {
+        "egfr": {
+          "value": 75,
+          "unit": "mL/min/1.73m2",
+          "qualifier": "=",
+          "equation": "ckd_epi_2021_creatinine",
+          "reliability": "valid",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01"
+        },
+        "alt": {
+          "value": 80,
+          "unit": "U/L",
+          "lower_limit": 5,
+          "upper_limit": 40,
+          "reference_range_applicable": true,
+          "reliability": "valid",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01"
+        },
+        "ast": {
+          "value": 40,
+          "unit": "U/L",
+          "lower_limit": 5,
+          "upper_limit": 40,
+          "reference_range_applicable": true,
+          "reliability": "valid",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01"
+        }
+      }
+    },
+    "inflammation": {
+      "person": {
+        "age": 40,
+        "pregnancy_status": "not_pregnant"
+      },
+      "context": {
+        "acute_context": "absent",
+        "chronic_inflammatory_condition": "absent",
+        "inflammation_affecting_treatment": "absent"
+      },
+      "observations": {
+        "hs_crp": {
+          "observation_id": "synthetic-hscrp",
+          "value": 2,
+          "unit": "mg/L",
+          "assay_type": "hs_crp",
+          "qualifier": "=",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid"
+        },
+        "wbc": {
+          "value": 12,
+          "unit": "10^9/L",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid",
+          "lower_limit": 4,
+          "upper_limit": 11,
+          "reference_range_applicable": true,
+          "lab_flag": "High (synthetic example range)"
+        }
+      }
+    },
+    "nutrition": {
+      "observations": []
+    },
+    "system-stability": {
+      "example_note": "Synthetic acceptance fixture. These reference intervals are not clinical defaults.",
+      "person": {
+        "age": 40,
+        "pregnancy_status": "not_applicable"
+      },
+      "selection": {
+        "report_id": "synthetic-report-1",
+        "specimen_id": "synthetic-specimen-1",
+        "specimen_date": "2026-09-20",
+        "observation_ids": {
+          "sodium": "na-1",
+          "potassium": "k-1",
+          "chloride": "cl-1",
+          "total_co2": "co2-1"
+        }
+      },
+      "observations": {
+        "sodium": {
+          "observation_id": "na-1",
+          "raw_analyte_name": "Sodium",
+          "value": 140,
+          "unit": "mmol/L",
+          "qualifier": "=",
+          "lower_limit": 135,
+          "upper_limit": 145,
+          "reference_unit": "mmol/L",
+          "reference_applicability": "confirmed",
+          "reference_provenance": "Synthetic fixture interval, not a patient reference",
+          "report_id": "synthetic-report-1",
+          "specimen_id": "synthetic-specimen-1",
+          "specimen_date": "2026-09-20",
+          "specimen_type": "serum",
+          "reliability": "not_flagged",
+          "source_flags": []
+        },
+        "potassium": {
+          "observation_id": "k-1",
+          "raw_analyte_name": "Potassium",
+          "value": 4,
+          "unit": "mmol/L",
+          "qualifier": "=",
+          "lower_limit": 3.5,
+          "upper_limit": 5,
+          "reference_unit": "mmol/L",
+          "reference_applicability": "confirmed",
+          "reference_provenance": "Synthetic fixture interval, not a patient reference",
+          "report_id": "synthetic-report-1",
+          "specimen_id": "synthetic-specimen-1",
+          "specimen_date": "2026-09-20",
+          "specimen_type": "serum",
+          "reliability": "not_flagged",
+          "source_flags": []
+        },
+        "chloride": {
+          "observation_id": "cl-1",
+          "raw_analyte_name": "Chloride",
+          "value": 102,
+          "unit": "mmol/L",
+          "qualifier": "=",
+          "lower_limit": 98,
+          "upper_limit": 107,
+          "reference_unit": "mmol/L",
+          "reference_applicability": "confirmed",
+          "reference_provenance": "Synthetic fixture interval, not a patient reference",
+          "report_id": "synthetic-report-1",
+          "specimen_id": "synthetic-specimen-1",
+          "specimen_date": "2026-09-20",
+          "specimen_type": "serum",
+          "reliability": "not_flagged",
+          "source_flags": []
+        },
+        "total_co2": {
+          "observation_id": "co2-1",
+          "raw_analyte_name": "Total CO2",
+          "value": 25,
+          "unit": "mmol/L",
+          "qualifier": "=",
+          "lower_limit": 22,
+          "upper_limit": 29,
+          "reference_unit": "mmol/L",
+          "reference_applicability": "confirmed",
+          "reference_provenance": "Synthetic fixture interval, not a patient reference",
+          "report_id": "synthetic-report-1",
+          "specimen_id": "synthetic-specimen-1",
+          "specimen_date": "2026-09-20",
+          "specimen_type": "serum",
+          "assay_type": "chemistry_total_co2",
+          "reliability": "not_flagged",
+          "source_flags": []
+        }
+      }
+    }
+  }
+}

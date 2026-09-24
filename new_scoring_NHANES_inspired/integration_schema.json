@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Health scorer shared API 1.0 envelope",
+  "description": "Select $defs/request or $defs/response. Domain payload fields are specified in the bundled domain engine contracts and validated by the engines; this schema validates the shared envelope only.",
+  "oneOf": [{"$ref": "#/$defs/request"}, {"$ref": "#/$defs/response"}],
+  "$defs": {
+    "date": {"type": "string", "format": "date", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+    "domainId": {"enum": ["metabolism", "organ-stress", "inflammation", "nutrition", "system-stability"]},
+    "request": {
+      "type": "object", "additionalProperties": false,
+      "required": ["api_version", "evaluation_date", "domains"],
+      "properties": {
+        "api_version": {"const": "1.0"},
+        "evaluation_date": {"$ref": "#/$defs/date"},
+        "domains": {"type": "object", "minProperties": 1, "propertyNames": {"$ref": "#/$defs/domainId"}, "additionalProperties": {"type": "object"}}
+      }
+    },
+    "error": {
+      "type": "object", "required": ["code", "message"], "additionalProperties": false,
+      "properties": {"code": {"const": "invalid_domain_request"}, "message": {"type": "string"}}
+    },
+    "domainResponse": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["processing_status", "model_version", "result"], "properties": {
+          "processing_status": {"const": "ok"}, "model_version": {"type": "string"}, "result": {"type": "object", "description": "Unmodified engine response. See domain output contract."}
+        }},
+        {"type": "object", "additionalProperties": false, "required": ["processing_status", "model_version", "error"], "properties": {
+          "processing_status": {"const": "error"}, "model_version": {"type": "string"}, "error": {"$ref": "#/$defs/error"}
+        }}
+      ]
+    },
+    "response": {
+      "type": "object", "additionalProperties": false,
+      "required": ["api_version", "package_version", "model_versions", "model_status", "overall_score", "overall_score_status", "evaluation_date", "processing_status", "domains"],
+      "properties": {
+        "api_version": {"const": "1.0"}, "package_version": {"type": "string"},
+        "model_versions": {"type": "object", "propertyNames": {"$ref": "#/$defs/domainId"}, "additionalProperties": {"type": "string"}},
+        "model_status": {"const": "preliminary_not_clinically_validated"},
+        "overall_score": {"type": "null"}, "overall_score_status": {"const": "not_defined"},
+        "evaluation_date": {"$ref": "#/$defs/date"},
+        "processing_status": {"enum": ["ok", "partial", "error"]},
+        "domains": {"type": "object", "minProperties": 1, "propertyNames": {"$ref": "#/$defs/domainId"}, "additionalProperties": {"$ref": "#/$defs/domainResponse"}}
+      }
+    }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "model_version": "liver-kidney-v0.1-provisional",
+  "implementation_status": "engine_and_descriptive_evaluation_complete_dashboard_pending",
+  "source_review_date": "2026-09-24",
+  "domain_score_enabled": false,
+  "domain_aggregation_status": "aggregation_not_defined",
+  "point_design": "Unvalidated modeling choices; not organ-function percentages or disease probabilities",
+  "minimum_point_age": 18,
+  "older_age_notice_threshold": 85,
+  "kidney": {
+    "unit": "mL/min/1.73m2",
+    "anchors": [[0, 0], [15, 10], [30, 30], [45, 50], [60, 75], [90, 100]],
+    "interpolation": "linear",
+    "above_last_anchor": "plateau",
+    "bound_policy": "point_only_on_constant_plateau_otherwise_envelope",
+    "supported_reported_equations": ["ckd_epi_2021_creatinine", "ckd_epi_2021_creatinine_cystatin_c", "ckid_u25_creatinine"],
+    "creatinine_umol_l_per_mg_dl": 88.4,
+    "ckd_epi_2021_creatinine": {
+      "minimum_age": 18,
+      "coefficient": 142,
+      "high_creatinine_exponent": -1.2,
+      "age_base": 0.9938,
+      "female": {"k": 0.7, "alpha": -0.241, "factor": 1.012},
+      "male": {"k": 0.9, "alpha": -0.302, "factor": 1}
+    },
+    "ckid_u25_creatinine": {
+      "minimum_age": 1,
+      "maximum_age_inclusive": 25,
+      "age_breaks": [12, 18],
+      "age_exponent_origin": 12,
+      "female": {"base_k": 36.1, "under_12_base": 1.008, "age_12_to_18_base": 1.023, "adult_k": 41.4},
+      "male": {"base_k": 39, "under_12_base": 1.008, "age_12_to_18_base": 1.045, "adult_k": 50.8}
+    }
+  },
+  "liver": {
+    "required_markers": ["alt", "ast"],
+    "unit": "U/L",
+    "requires_applicable_lower_and_upper_limits": true,
+    "below_lower_limit": "unscored",
+    "within_reference_interval_points": 100,
+    "upper_limit_ratio_anchors": [[1, 100], [2, 75], [5, 40], [10, 15], [20, 0]],
+    "interpolation": "linear",
+    "above_last_anchor": "plateau",
+    "grouping": "minimum_marker_points",
+    "requires_both_markers": true
+  },
+  "context_only": ["alp", "bilirubin", "ggt", "albumin", "bun", "uric_acid", "uacr", "cystatin_c"],
+  "research_adapter_only": {
+    "nhanes_2005_2006_creatinine_correction": {"intercept_mg_dl": -0.016, "slope": 0.978, "apply_only_to_verified_uncorrected_values": true}
+  }
+}

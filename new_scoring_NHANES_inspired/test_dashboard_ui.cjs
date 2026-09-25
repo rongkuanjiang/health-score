@@ -27,7 +27,7 @@ async function until(fn) {
     if (hold && ['/score/organ-stress', '/score/inflammation', '/score/system-stability', '/score/nutrition'].includes(url)) await hold;
     return response;
   };
-  for (const file of ['details.js', 'app.js', 'organ.js', 'inflammation.js', 'stability.js', 'nutrition.js', 'domains.js', 'overview.js']) {
+  for (const file of ['details.js', 'app.js', 'organ.js', 'inflammation.js', 'stability.js', 'nutrition.js', 'domains.js', 'overview.js', 'wearables.js']) {
     const script = d.createElement('script'); script.textContent = fs.readFileSync(path.join(__dirname, 'dashboard', file), 'utf8'); d.body.append(script);
   }
   const get = id => d.getElementById(id), org = id => get(`organ-${id}`);
@@ -105,9 +105,9 @@ async function until(fn) {
   async function inflammationProfile(name) {infl('profile').value=name;infl('load').click();await until(()=>!infl('calculate').disabled);assert.equal(infl('error').textContent,'');}
   async function inflammationCalculate() {infl('form').requestSubmit();await until(()=>!infl('calculate').disabled);assert.equal(infl('error').textContent,'');}
   get('nav-inflammation').click(); assert.equal(get('domain-organ-stress').hidden,false);
-  await inflammationProfile('example');assert.equal(infl('results').querySelector('strong').textContent,'82.2 / 100');assert.match(get('overview-inflammation').textContent,/82\.2/);assert.match(get('domain-radar').querySelector('[data-domain="inflammation"]').textContent,/82\.2/);assert.match(inflammationResult(),/High \(synthetic/);
-  await inflammationProfile('low');assert.equal(infl('results').querySelector('strong').textContent,'98.2 / 100');assert.match(inflammationResult(),/High \(synthetic/);
-  await inflammationProfile('bound');assert.equal(infl('results').querySelector('strong').textContent,'98.2 / 100');assert.match(inflammationResult(),/Points from a reported bound/);
+  await inflammationProfile('example');assert.equal(infl('results').querySelector('strong').textContent,'82.2');assert.match(get('overview-inflammation').textContent,/82\.2/);assert.match(get('domain-radar').querySelector('[data-domain="inflammation"]').textContent,/82\.2/);assert.match(inflammationResult(),/High \(synthetic/);
+  await inflammationProfile('low');assert.equal(infl('results').querySelector('strong').textContent,'98.2');assert.match(inflammationResult(),/High \(synthetic/);
+  await inflammationProfile('bound');assert.equal(infl('results').querySelector('strong').textContent,'98.2');assert.match(inflammationResult(),/Points from a reported bound/);
   for (const name of ['high','uncertain-bound','cbc','standard','unknown','pregnant','younger']) {await inflammationProfile(name);assert.equal(infl('results').querySelector('strong').textContent,'—');}
   await inflammationProfile('example');infl('crp-unit').value='mg/dL';infl('crp').value='0.2';change(infl('crp'));await inflammationCalculate();assert.match(inflammationResult(),/80\.0 \/ 100/);
   infl('wbc').value='0';infl('wbc-flag').value='<img src=x onerror=alert(1)>';change(infl('wbc'));await inflammationCalculate();assert.equal(sent.at(-1).body.observations.wbc.value,0);assert.equal(infl('results').querySelector('img'),null);assert.match(inflammationResult(),/<img src=x/);
@@ -229,6 +229,40 @@ async function until(fn) {
   assert.equal(get('domain-radar').querySelectorAll('.radar-point').length,0);
   assert.equal(get('domain-radar').querySelectorAll('.radar-profile,.radar-connection').length,0);
   get('edit-person').click();get('person-age').value='99';get('cancel-person').click();assert.equal(get('person-age').value,'51');
+  // Wearable records never call scoring endpoints or replace laboratory results.
+  assert.equal(get('wear-view-trends').hidden,false);
+  assert.equal(get('wear-view-entry').hidden,true);
+  assert.equal(get('wear-view-log').hidden,true);
+  get('wear-view-entry-button').click();
+  assert.equal(get('wear-view-trends').hidden,true);
+  assert.equal(get('wear-view-entry').hidden,false);
+  get('wear-source').value='Unsaved device';
+  get('wear-view-log-button').click();
+  assert.equal(get('wear-view-entry').hidden,true);
+  assert.equal(get('wear-view-log').hidden,false);
+  get('wear-view-entry-button').click();
+  assert.equal(get('wear-source').value,'Unsaved device');
+  const sentBefore=sent.length, radarBefore=get('domain-radar').innerHTML;
+  get('wear-source').value='<watch>';get('wear-steps').value='0';get('wear-sleep').value='7.5';
+  get('wear-ecg').value='Inconclusive';get('wear-time').value='09:15';get('wear-ecg-hr').value='68';
+  get('wear-note').value='<img src=x onerror=alert(1)>';
+  get('wear-form').requestSubmit();
+  assert.match(get('wear-save-status').textContent,/saved/);
+  assert.match(get('wear-log').textContent,/Inconclusive/);
+  assert.equal(get('wear-log').querySelector('img'),null);
+  assert.match(get('wear-cards').children[1].textContent,/7.5/);
+  const savedLog=get('wear-log').textContent;
+  get('wear-demo').click();assert.match(get('wear-mode').textContent,/Fictional/);
+  assert.match(get('wear-coverage').textContent,/26\/30/);
+  assert.equal(get('wear-chart').querySelectorAll('.wear-point').length,26);
+  assert.equal(get('wear-chart').querySelectorAll('.wear-line').length,22);
+  get('wear-demo').click();assert.equal(get('wear-log').textContent,savedLog);
+  get('wear-metric').value='sleep';get('wear-metric').dispatchEvent(new w.Event('change'));
+  assert.match(get('wear-coverage').textContent,/1\/30/);
+  get('wear-sleep').value='25';assert.equal(get('wear-form').checkValidity(),false);
+  get('wear-sleep').value='7.5';
+  get('wear-delete').click();assert.doesNotMatch(get('wear-log').textContent,/Inconclusive/);
+  assert.equal(sent.length,sentBefore);assert.equal(get('domain-radar').innerHTML,radarBefore);
   assert.deepEqual(errors, []);
   console.log('PASS: unified dashboard, inline domains, calculate-all, full demo, onboarding, shared details, five-domain overview, radar points and gaps, critical notices, navigation, profiles, bounds, safe text, stale responses, reset and connection errors.');
 })().catch(error => {console.error(error); process.exitCode = 1;}).finally(() => {dom?.window.close(); server.kill();});

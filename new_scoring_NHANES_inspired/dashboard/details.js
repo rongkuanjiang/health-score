@@ -128,3 +128,12 @@ function calculationDetails(result) {
   body.append(educationalText('p','Source links explain the underlying measurements and clinical context. The exact curves, coverage boundaries, and weighting are our provisional modeling choices.', 'muted'));
   details.append(body); return details;
 }
+
+// Shared presentation for all five domain totals; calculation stays in Python.
+function domainScoreHeader(name, score) {
+  const box = document.createElement('div'); box.className = 'domain-score-header';
+  for (const [tag, value, cls] of [['p', name + ' score', 'eyebrow'], ['strong', score ?? '—', 'domain-score-value'], ['p', score == null ? 'Score unavailable · review coverage below' : 'out of 100 model points', 'muted']]) {
+    const item = document.createElement(tag); item.textContent = value; item.className = cls; box.append(item);
+  }
+  return box;
+}

@@ -410,3 +410,96 @@ button {padding:10px 14px;min-height:40px}
   .overview-heading>div {width:100%}
   .overview-heading {flex-direction:row;align-items:center}
 }
+
+/* Shared domain presentation, independent of each domain's scoring model. */
+.domain-score-header {padding:20px 24px;background:var(--tint);border:1px solid var(--line);border-radius:12px;margin:0 0 18px}
+.domain-score-header .eyebrow {margin:0 0 10px;font-size:11px}
+.domain-score-header .domain-score-value {display:block;font-size:42px;line-height:1.1;letter-spacing:-1px;color:var(--accent)}
+.domain-score-header .muted {margin:10px 0 0}
+.workspace-scroll .summary {display:block}
+.workspace-scroll .card,.workspace-scroll .component,#stab-results .component,#infl-results .component,#nutr-results .component {padding:18px;border:1px solid var(--line);border-radius:10px;background:var(--surface);margin:12px 0;min-width:0;overflow-wrap:anywhere}
+.workspace-scroll .card h3,.workspace-scroll .component h4 {font-size:16px;margin:0 0 12px;color:var(--ink)}
+.workspace-scroll .cards,.workspace-scroll .organ-components {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.workspace-scroll .cards>.card,.workspace-scroll .organ-components>.card {margin:0}
+.workspace-scroll .section-head .step {display:none}
+.workspace-scroll .section-head h2,.workspace-scroll .panel>h3 {font-size:18px;font-weight:600}
+.workspace-scroll .education {border:1px solid var(--line);border-radius:8px}
+.workspace-scroll {max-height:none;min-height:0;overflow:visible;padding-right:0}
+.workspace-switcher {padding:6px;background:var(--tint);border-radius:10px;width:fit-content}
+.workspace-switcher button {border-color:transparent}
+.dashboard-home .overview-card {min-height:100px}
+.dashboard-home>.wearable-dashboard {grid-column:1/-1;grid-row:auto;margin:10px 0 0;padding:24px;min-width:0}
+.wearable-heading {display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.wearable-heading h2 {font-size:24px;margin:6px 0}
+.wearable-heading h3 {font-size:17px;margin:0}
+.wearable-heading p {margin:6px 0}
+.wearable-controls {display:flex;align-items:end;gap:16px;flex-wrap:wrap;margin:24px 0 16px}
+.wearable-controls label {flex:1;min-width:180px}
+.wearable-controls button {margin-bottom:1px}
+.wearable-cards {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
+.wearable-metric {display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:16px;text-align:left;border:1px solid var(--line);border-radius:10px;font-weight:400}
+.wearable-metric strong {font-size:26px;font-weight:600}
+.wearable-metric span {font-size:12px}
+.wearable-metric[aria-pressed="true"] {background:var(--tint);border-color:var(--accent);box-shadow:inset 0 3px var(--accent)}
+.wearable-trend {padding:20px;border:1px solid var(--line);border-radius:12px;margin:20px 0}
+#wear-chart svg {display:block;width:100%;height:auto;margin-top:16px}
+.wear-grid {stroke:var(--line);stroke-width:1}
+.wear-axis {fill:var(--muted);font-size:12px}
+.wear-line {stroke:var(--accent);stroke-width:2.5}
+.wear-point {fill:var(--accent);stroke:var(--surface);stroke-width:1.5}
+.wearable-form {padding:20px}
+.wearable-form .grid {grid-template-columns:repeat(3,minmax(0,1fr))}
+.wearable-actions {display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
+.wearable-dashboard .table-wrap {margin:16px;max-width:calc(100% - 32px)}
+.wearable-dashboard table {min-width:950px}
+.wearable-dashboard caption {text-align:left;padding:12px;color:var(--muted)}
+.wearable-dashboard .muted {font-size:12px;line-height:1.6}
+@media(max-width:760px){.wearable-cards {grid-template-columns:repeat(2,minmax(0,1fr))}.wearable-form .grid {grid-template-columns:repeat(2,minmax(0,1fr))}.dashboard-home>.wearable-dashboard {padding:16px}.wearable-trend {padding:12px}.workspace-scroll .cards,.workspace-scroll .organ-components {grid-template-columns:1fr}}
+@media(max-width:440px){.wearable-form .grid {grid-template-columns:1fr}.wearable-form {padding:14px}.wearable-controls {gap:10px}.wearable-controls label {min-width:100%}.wearable-metric {padding:12px}.wearable-heading h2 {font-size:21px}}
+
+/* Compact wearable workspace: a stable-height panel with interchangeable views. */
+.dashboard-home>.wearable-dashboard {padding:16px;margin-top:0;display:grid;grid-template-columns:1fr auto;gap:8px 16px}
+.wearable-dashboard>.wearable-heading {gap:10px;flex-wrap:nowrap}
+.wearable-heading h2 {font-size:19px;margin:0}
+.wearable-heading p {margin:4px 0 0}
+.wearable-dashboard>.wearable-controls {margin:0;gap:8px;flex-wrap:nowrap;align-items:center}
+.wearable-controls label {min-width:0;font-size:10px;gap:3px}
+.wearable-controls input {padding:5px 8px;min-height:32px;font-size:12px}
+.wearable-controls button {padding:7px 10px;min-height:34px;white-space:nowrap;font-size:12px}
+.wearable-tabs {display:flex;gap:4px;align-items:center}
+.wearable-tabs button {padding:7px 12px;min-height:34px;font-size:12px;border-color:transparent}
+.wearable-tabs button[aria-pressed="true"] {background:var(--tint);border-color:var(--line)}
+#wear-mode {margin:0;align-self:center;text-align:right;font-size:11px}
+.wearable-viewport {grid-column:1/-1;height:260px;overflow:auto;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;scrollbar-gutter:stable}
+.wearable-trends-view {display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px;height:100%}
+.wearable-trends-view .wearable-cards {display:flex;flex-direction:column;gap:3px;margin:0;min-width:0}
+.wearable-trends-view .wearable-metric {display:grid;grid-template-columns:minmax(0,1fr) auto 60px;align-items:center;gap:6px;padding:5px 8px;min-height:29px;border-radius:5px}
+.wearable-metric strong {font-size:15px;line-height:1}
+.wearable-metric span {font-size:11px}
+.wearable-metric .muted {font-size:10px;text-align:right;line-height:1.1}
+.wearable-metric[aria-pressed="true"] {box-shadow:inset 3px 0 var(--accent)}
+.wearable-trends-view .wearable-trend {border:0;border-radius:0;padding:6px 0;margin:0;min-width:0}
+.wearable-trend .wearable-heading h3 {font-size:14px}
+.wearable-trend .wearable-heading p {font-size:11px;margin:0}
+#wear-chart svg {height:190px;margin-top:4px}
+.wearable-form {padding:4px 8px}
+.wearable-form .grid {gap:12px}
+.wearable-entry-view>#edit-wearable {margin:10px 8px}
+.wearable-log-view .table-wrap {margin:0;max-width:100%;overflow:visible}
+.wearable-log-view th {position:sticky;top:-10px;z-index:1;background:var(--tint)}
+.wearable-log-view td {padding:9px;font-size:12px}
+.wearable-log-view caption {padding:4px 8px;font-size:11px}
+.wearable-footnote {grid-column:1/-1;margin:0;font-size:10px!important}
+@media(max-width:760px){
+  .dashboard-home>.wearable-dashboard {grid-template-columns:1fr;padding:12px;gap:8px}
+  .wearable-dashboard>.wearable-controls {grid-row:2;justify-content:space-between}
+  .wearable-controls label {flex:0 1 auto;min-width:0}
+  .wearable-controls label:first-child {flex-direction:row;align-items:center;gap:8px}
+  #wear-mode {text-align:left;font-size:10px}
+  .wearable-viewport {height:300px}
+  .wearable-trends-view {grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:8px}
+  .wearable-trends-view .wearable-cards {display:flex;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .wearable-trends-view .wearable-metric {display:flex;flex-direction:column;align-items:flex-start;min-width:105px;gap:5px;padding:8px}
+  #wear-chart svg {height:160px}
+  .wearable-trend .wearable-heading {gap:4px}
+}

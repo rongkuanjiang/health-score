@@ -48,7 +48,7 @@
     window.dispatchEvent(new CustomEvent('scorer-result', {detail: {domain: 'nutrition', result: r}}));
     const out = el('results'), c = r.components.vitamin_d; out.replaceChildren();
     el('state').textContent = `${human(r.status)} · ${r.model_version}`;
-    out.append(node('h4','Nutrition: B12 and iron-marker profile'),node('strong',r.display_score === null ? '—' : `${r.display_score} / 100`));
+    out.append(domainScoreHeader('Nutrition', r.display_score));
     for (const reason of r.reasons) out.append(node('p',human(reason),'notice'));
     for (const marker of ['b12','ferritin']) {const part=r.components[marker];out.append(node('h4',human(marker)),node('p',part.score===null?'Unavailable':`${part.display_score} / 100; 50% weight; ${part.weighted_contribution.toFixed(2)} points contributed`));notices(out,part.notices);}
     out.append(node('h4','Optional vitamin D component'),node('p',c.display_score===null?'Unavailable':`${c.display_score} / 100; excluded from the Nutrition total`));

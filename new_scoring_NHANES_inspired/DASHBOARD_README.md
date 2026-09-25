@@ -1,4 +1,14 @@
-## Current dashboard, 25 September 2026
+## Uniform domains and wearable tracking, 25 September 2026
+
+Compact wearable layout: **Trends**, **Daily entry**, and **Records & ECG** replace one another inside a bounded dashboard panel. Desktop trends use a narrow measurement list beside the chart; mobile measurements scroll horizontally. Entry and logs scroll within the panel, preserving unsaved fields when switching views. This avoids extending the dashboard into a long page.
+
+All five domain workspaces share a score header, marker card styling, typography, spacing and view controls. Metabolism entry now uses marker fieldsets like the other domains. Calculations and eligibility rules are unchanged.
+
+The overview has a separate **Wearable device data** section with a selectable 30-day chart and recorded-day averages for steps, sleep, active minutes, resting heart rate, HRV (RMSSD), oxygen saturation and respiratory rate. Add or edit one daily summary and one device-reported ECG record per date. The ECG log stores result, local time, heart rate and report notes; it does not ingest or analyze waveforms. Missing days stay gaps, and zero remains a recorded value. The fictional preview is separate from personal records and the bloodwork demo. Quick step entry copies entered steps into daily records when saved.
+
+Wearable entries never contribute to scores or scoring requests. Entry is manual and page-session-only; reload clears records. No device sync is implemented. The Python suite and dashboard DOM interactions were checked for this update; rendered desktop/mobile review remains outstanding because no browser is available. Earlier visual verification below applies only to the previous revision.
+
+## Previous dashboard revision, 25 September 2026
 
 The overview shows all five domain scores beside a connected radar chart. Select a domain to switch to its workspace, then choose **Results** or **Edit biomarkers**. Inputs persist when switching; collection context and optional measurements expand on demand. Missing radar scores remain gaps.
 

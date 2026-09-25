@@ -109,8 +109,8 @@
     window.dispatchEvent(new CustomEvent('scorer-result', {detail: {domain: 'organ-stress', result: result}}));
     el('state').textContent = `${humanize(result.status)} · ${result.model_version}`;
     const out = el('results'); out.replaceChildren();
-    const total = node('article', '', 'card');
-    total.append(node('h3', 'Organ-stress score'), node('strong', result.display_score ?? '—'), node('p', result.domain_score === null ? 'Overall score unavailable' : 'out of 100 model points'));
+    const total = node('article', '', 'domain-score-container');
+    total.append(domainScoreHeader('Organ stress', result.display_score));
     total.append(node('p', `${result.coverage.scored}/${result.coverage.required} core markers scored · eGFR 50%, ALT 30%, ALP 20%`));
     if (result.review_required) total.append(node('p', 'Abnormal result or laboratory flag present. Review individual markers even when the total is high.', 'notice'));
     for (const reason of result.reasons) total.append(node('p', reasonText(reason), 'notice'));

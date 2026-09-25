@@ -48,7 +48,7 @@
     window.dispatchEvent(new CustomEvent('scorer-result', {detail: {domain: 'inflammation', result: r}}));
     const out = el('results'), c = r.components.hs_crp; out.replaceChildren();
     el('state').textContent = `${human(r.status)} · ${r.model_version}`;
-    out.append(node('h4','Inflammation domain score'),node('strong',r.display_score === null ? '—' : `${r.display_score} / 100`));
+    out.append(domainScoreHeader('Inflammation', r.display_score));
     for (const [marker, weight] of Object.entries(r.weights)) { const part = r.components[marker]; out.append(node('p',`${human(marker)}: ${part.display_score ?? 'Unavailable'} / 100 · ${weight*100}% weight · contribution ${r.weighted_contributions[marker] === null ? 'unavailable' : r.weighted_contributions[marker].toFixed(2)} points`)); }
     out.append(node('p',c.status === 'scored_from_bound' ? 'Points from a reported bound, not an exact concentration.' : 'This result describes the selected measurement at collection.'));
     if (r.domain_score === null) out.append(node('p','Both eligible hs-CRP and WBC results from the same date are needed. Available marker points remain visible.'));

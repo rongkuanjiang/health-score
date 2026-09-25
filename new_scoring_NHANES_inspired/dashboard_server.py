@@ -20,6 +20,7 @@ ASSETS['/inflammation.js'] = ('inflammation.js', 'text/javascript')
 ASSETS['/nutrition.js'] = ('nutrition.js', 'text/javascript')
 SCORERS['/score/nutrition'] = score_nutrition
 ASSETS['/stability.js'] = ('stability.js', 'text/javascript')
+ASSETS['/wearables.js'] = ('wearables.js', 'text/javascript')
 ASSETS['/overview.js'] = ('overview.js', 'text/javascript')
 SCORERS['/score/system-stability'] = score_system_stability
 

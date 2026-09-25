@@ -46,8 +46,8 @@ function render(result) {
   $('result-state').textContent = `${human(result.status)} · ${result.model_version} · ${result.coverage.scored}/${result.coverage.required} markers scored`;
   const root = $('results'); root.replaceChildren();
   const summary = text('div', '', 'summary');
-  const total = text('div', '', 'total');
-  total.append(text('p', 'METABOLISM SCORE'), text('div', result.display_score ?? '—', 'big'), text('p', result.score === null ? 'Combined score withheld' : 'out of 100 model points'), text('p', `Latest known specimen: ${result.snapshot_date ?? 'Not available'}`));
+  const total = text('div', '', 'domain-score-container');
+  total.append(domainScoreHeader('Metabolism', result.display_score), text('p', `Latest known specimen: ${result.snapshot_date ?? 'Not available'}`));
   const notices = text('div', '');
   if (result.blocking_reasons.length) {
     notices.append(text('h3', 'What is needed'));

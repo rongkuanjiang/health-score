@@ -80,6 +80,19 @@
     }
   }
   const workspaces=new Map();
+  // Match the other domains' marker-entry cards without changing input IDs or values.
+  const metabolismRows=get('inputs');
+  const markerFields=make('div','','marker-entry-cards');
+  for(const row of [...metabolismRows.rows]){
+    const fieldset=make('fieldset','','organ-measurement');
+    fieldset.append(make('legend',row.cells[0].textContent));
+    const grid=make('div','','grid');
+    for(const [index,labelText]of ['Reported value','Unit','Reliability stated on report'].entries()){
+      const label=make('label',labelText);label.append(row.cells[index+1].firstElementChild);grid.append(label);
+    }
+    fieldset.append(grid);markerFields.append(fieldset);
+  }
+  metabolismRows.closest('.table-wrap').replaceWith(markerFields);
   for(const domain of domains){
     const root=get(`domain-${domain.id}`),form=get(domain.form);
     const toolbar=root.querySelector('.toolbar');
@@ -193,7 +206,7 @@
       get(`${domain.prefix}profile-note`).textContent=`Synthetic demo: Alex, age 42, male. Collection ${today}. Illustrative values and reference intervals, not population averages or a patient record.`;
     }
     get('person-summary').textContent='Demo: Alex, 42, male. Fictional bloodwork; illustrative values, not population averages.';
-    wearableSummary.hidden=true;showOverview();
+    wearableSummary.hidden=false;showOverview();
     for(const domain of domains)get(domain.form).requestSubmit();updateProgress();
   }
   get('load-all-demo').addEventListener('click',loadDemo);

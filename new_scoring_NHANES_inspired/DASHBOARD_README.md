@@ -1,3 +1,17 @@
+## Current dashboard, 25 September 2026
+
+The overview shows all five domain scores beside a connected radar chart. Select a domain to switch to its workspace, then choose **Results** or **Edit biomarkers**. Inputs persist when switching; collection context and optional measurements expand on demand. Missing radar scores remain gaps.
+
+Select **Explore a demo score** on the opening screen, or **Demo score** on the overview, to load Alex: one fictional 42-year-old male with consistent collection dates, demographics and shared marker values. This replaces all five domains with illustrative values, not population averages or clinical reference defaults. Scores from the current engines are Metabolism 86.4, Organ stress 100.0, Inflammation 90.4, Nutrition 100.0 and System Stability 100.0. Generic unnamed marker slots remain empty. Other example scenarios are available under the collapsed menu in each workspace.
+
+The demo covers bloodwork only; wearable entries are not changed or displayed as Alex's data. Reloading clears page entries. Scores are provisional model points, not an overall health score. Desktop (1440 px) and mobile (390 px) browser layouts and interactions were checked for this revision. The sections below retain earlier implementation history.
+
+> Nutrition update, 25 September 2026: [v0.2](NUTRITION_V02_SPEC.md) now provides one provisional B12/ferritin total (50% each), with vitamin D separate and optional. Prior vitamin-D-only/null-total descriptions are historical.
+
+> Update 25 September 2026: inflammation now uses the provisional v0.2 fixed-core hs-CRP/WBC domain total. See [current specification](INFLAMMATION_V02_SPEC.md). Earlier marker-only/null-total descriptions below are historical. Nutrition and system stability are unchanged.
+
+> Current organ-stress model (25 September 2026): v0.2 now combines eGFR (50%), ALT (30%) and ALP (20%) into one domain score. AST and bilirubin are optional context. See [the current specification](ORGAN_STRESS_V02_SPEC.md) for inputs, curves, missing-data rules and Canadian source rationale. The v0.1 descriptions and evaluation results below are historical and do not validate v0.2.
+
 # Five-domain dashboard and integration release
 
 ## Questionnaire and layout update
@@ -10,7 +24,7 @@ Layout fixes give score cards more space, add padding inside expandable sections
 
 Start by entering age at collection, laboratory sex reference and pregnancy context. The main dashboard shows all five score cards, the pentagon chart and expandable biomarker sections together. Select **Enter biomarkers** on a card or a domain shortcut to open its inline section; other domains remain available. **Calculate all domains** evaluates every form in one action. **Try a full example** fills all five domains with synthetic worked profiles and calculates them. Neither action leaves the dashboard. Domain section headers show current scores/status, and **Jump to scores** scrolls to the summary. Personal details are prefilled; expand **Personal details for this report** to adjust them. Synthetic profiles have their own example context and are labeled on score cards. **Edit my details** updates shared context and clears previous results so they must be recalculated.
 
-The pentagon uses a 0–100 scale and plots existing points: metabolism, separate kidney/liver components on the organ axis, hs-CRP and vitamin D. System Stability remains a categorical reference summary. Missing or bounded-only scores are not plotted as exact values; ranges stay visible on cards. No overall filled shape or additional domain score is manufactured. Expand report notices on a card or open full results for all context. Editing biomarkers removes old card results and chart points, including when an older request finishes later.
+The pentagon uses a 0–100 scale and plots existing points: metabolism, one weighted organ-stress domain score on the organ axis, hs-CRP and vitamin D. System Stability remains a categorical reference summary. Missing or bounded-only scores are not plotted as exact values; ranges stay visible on cards. No overall filled shape or additional domain score is manufactured. Expand report notices on a card or open full results for all context. Editing biomarkers removes old card results and chart points, including when an older request finishes later.
 
 Restart the Python server and hard-refresh the page to load the new overview asset. Automated interaction checks pass; browser visual review remains outstanding because no browser is available in the tool runtime.
 
@@ -24,7 +38,7 @@ The module/package handoff is implemented. Production deployment and named owner
 
 # Health scorer dashboard — step 4
 
-## Nutrition markers added, 2026-09-24
+## Historical Nutrition v0.1 checkpoint, 2026-09-24
 
 Choose **04 · Nutrition markers**, select **Worked example**, and click **Load nutrition profile**. Expect **75.0 vitamin D points** and a separate low-albumin flag. The dashboard calls the unchanged engine through `POST /score/nutrition`. `GET /model/nutrition` samples its actual curve for the diagram and accessible example table. The overall nutrition score remains null, including when vitamin D receives 100 points.
 
@@ -36,13 +50,13 @@ Verification: all **144 Python tests passed**, including the original HbA1c Java
 
 The Browser runtime returned no available browser, confirmed by an empty browser list. Desktop/mobile visual verification remains outstanding; automated DOM checks do not verify rendered layout. Shared production API packaging and clinical validation remain separate work. Restart the server and refresh the dashboard to load nutrition.
 
-## System Stability added, 2026-09-24
+## System Stability v0.2, 2026-09-25
 
-Choose **05 · System Stability**, select **All four within illustrative ranges**, and click **Load stability profile**. Expect a within-reference headline, **4/4 interpretable** core results, individual range diagrams and no numerical score. The unchanged engine supplies comparisons through `POST /score/system-stability`; null scores never become zero or 100.
+Choose **05 · System Stability**, select **All four within illustrative ranges**, and click **Load stability profile**. Expect **100.0/100** from the sodium/potassium scoring core, one radar point, a within-reference headline and four reference diagrams. The [v0.2 specification](SYSTEM_STABILITY_V02_SPEC.md) defines provisional curves, weights and eligibility. Missing core information leaves a gap rather than zero; chloride/CO2/calcium provide supporting comparisons without changing the total.
 
 The manual form selects one report/date/specimen group and one result per marker. Enter actual report ranges, units and interval provenance; applicability, reliability, specimen type and CO2 identity start unknown. Reference applicability and chemistry alias verification are laboratory/importer metadata, not judgments patients should make themselves. Multiple specimens/candidate observations remain supported by the engine contract rather than this simplified form. Do not combine different collections in the manual panel. Known specimen IDs must be retained. Optional total and ionized calcium remain distinct and cannot change core coverage.
 
-Profiles cover incomplete and abnormal panels, critical flags with missing values, conflicting flags, uncertain bounds, missing ranges, interference and critical calcium alongside a within-range core panel. Report instructions and all notices remain visible. Exact interpretable results get diagrams using engine-normalized values and limits; bounds keep their qualifiers without an exact-value dot. There are no numerical scoring curves for this domain. JSON output preserves full engine provenance. Editing clears stale results, and switching domains retains independent entries.
+Profiles cover incomplete and abnormal panels, critical flags with missing values, conflicting flags, uncertain bounds, missing ranges, interference and critical calcium alongside a within-range core panel. Report instructions and notices remain visible even with a high score. Exact interpretable results get reference diagrams; bounds keep their qualifiers without an exact-value dot or point score. The education panel lists numerical curve anchors and the 50/50 formula. JSON preserves provenance. Editing clears stale results, and switching domains retains independent entries. Shared age/pregnancy details now propagate into this domain.
 
 Verification: the full suite passed **144 Python tests** at this checkpoint. The shared DOM interaction suite passed against an actual temporary Python server, including System Stability profiles, endpoint parity, unknown collection dates, CO2 identity, unit conversions, safe rendering of report text, stale responses, reset isolation and connection errors. One initial HTTP run encountered a Windows connection reset; the full rerun passed. Syntax checks passed. Consumer references were checked against MedlinePlus [electrolyte panel](https://medlineplus.gov/lab-tests/electrolyte-panel/), [CO2 testing](https://medlineplus.gov/lab-tests/carbon-dioxide-co2-in-blood/) and [calcium testing](https://medlineplus.gov/ency/article/003477.htm).
 

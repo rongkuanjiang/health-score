@@ -1,3 +1,5 @@
+> Current organ-stress model (25 September 2026): v0.2 now combines eGFR (50%), ALT (30%) and ALP (20%) into one domain score. AST and bilirubin are optional context. See [the current specification](ORGAN_STRESS_V02_SPEC.md) for inputs, curves, missing-data rules and Canadian source rationale. The v0.1 descriptions and evaluation results below are historical and do not validate v0.2.
+
 # Liver and kidney markers v0.1 — implementation specification
 
 Prepared 2026-09-24. Stages 2 and 3 are complete: [Python engine and acceptance tests](LIVER_KIDNEY_ENGINE_README.md) and [NHANES descriptive evaluation](nhanes_inventory/liver_kidney_v01_evaluation.md). The evaluation preserves the kidney date gate and labels its date-neutral numerical analysis separately. Dashboard work remains; the model is not clinically validated. The shared integration API (original step 5) stays deferred until after the other domains.

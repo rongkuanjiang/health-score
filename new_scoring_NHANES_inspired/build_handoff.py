@@ -46,7 +46,11 @@ def build(output_dir=None):
                   f'nhanes_inventory/{name}_v01_evaluation.md']
         if name != 'metabolism':
             files.append(f'{name.upper()}_ENGINE_README.md')
-    files += ['hba1c_score.mjs', 'hba1c_score.test.mjs', 'test_integration.py', 'test_integration_client.mjs',
+    files += ['ORGAN_STRESS_V02_SPEC.md', 'NUTRITION_V02_SPEC.md', 'SYSTEM_STABILITY_V02_SPEC.md',
+              'test_organ_stress_v02.py', 'test_nutrition_v02.py', 'test_system_stability_v02.py',
+              'test_dashboard_ui.cjs', 'test_stability_ui.cjs']
+    files += ['inflammation_v02_parameters.json', 'INFLAMMATION_V02_SPEC.md', 'test_inflammation_v02.py',
+              'hba1c_score.mjs', 'hba1c_score.test.mjs', 'test_integration.py', 'test_integration_client.mjs',
               'test_dashboard.py']
     files += [str(path.relative_to(ROOT)).replace('\\', '/') for path in (ROOT / 'dashboard').iterdir() if path.is_file()]
     files += [str(path.relative_to(ROOT)).replace('\\', '/') for path in (ROOT / 'integration_examples').glob('*.json')]

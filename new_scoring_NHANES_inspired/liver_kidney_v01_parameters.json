@@ -1,9 +1,14 @@
 {
-  "model_version": "liver-kidney-v0.1-provisional",
-  "implementation_status": "engine_and_descriptive_evaluation_complete_dashboard_pending",
-  "source_review_date": "2026-09-24",
-  "domain_score_enabled": false,
-  "domain_aggregation_status": "aggregation_not_defined",
+  "model_version": "organ-stress-v0.2-provisional",
+  "implementation_status": "engine_and_dashboard_implemented",
+  "specification": "ORGAN_STRESS_V02_SPEC.md",
+  "source_review_date": "2026-09-25",
+  "domain_score_enabled": true,
+  "domain_aggregation_status": "fixed_weight_complete_core",
+  "required_markers": ["egfr", "alt", "alp"],
+  "effective_weights": {"egfr": 0.5, "alt": 0.3, "alp": 0.2},
+  "maximum_specimen_gap_days": 90,
+  "missing_core_policy": "withhold_total_no_weight_renormalization",
   "point_design": "Unvalidated modeling choices; not organ-function percentages or disease probabilities",
   "minimum_point_age": 18,
   "older_age_notice_threshold": 85,
@@ -33,7 +38,9 @@
     }
   },
   "liver": {
-    "required_markers": ["alt", "ast"],
+    "required_markers": ["alt", "alp"],
+    "weights": {"alt": 0.6, "alp": 0.4},
+    "accepted_units": {"alt": ["U/L", "IU/L"], "alp": ["U/L", "IU/L"]},
     "unit": "U/L",
     "requires_applicable_lower_and_upper_limits": true,
     "below_lower_limit": "unscored",
@@ -41,10 +48,10 @@
     "upper_limit_ratio_anchors": [[1, 100], [2, 75], [5, 40], [10, 15], [20, 0]],
     "interpolation": "linear",
     "above_last_anchor": "plateau",
-    "grouping": "minimum_marker_points",
-    "requires_both_markers": true
+    "grouping": "fixed_weight_mean",
+    "requires_all_markers": true
   },
-  "context_only": ["alp", "bilirubin", "ggt", "albumin", "bun", "uric_acid", "uacr", "cystatin_c"],
+  "context_only": ["ast", "bilirubin", "ggt", "albumin", "bun", "uric_acid", "uacr", "cystatin_c"],
   "research_adapter_only": {
     "nhanes_2005_2006_creatinine_correction": {"intercept_mg_dl": -0.016, "slope": 0.978, "apply_only_to_verified_uncorrected_values": true}
   }

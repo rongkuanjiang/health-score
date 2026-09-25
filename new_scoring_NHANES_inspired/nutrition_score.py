@@ -10,8 +10,17 @@ from pathlib import Path
 
 _PARAMS = json.loads(Path(__file__).with_name('nutrition_v01_parameters.json').read_text(encoding='utf-8'))
 VERSION = _PARAMS['model_version']
+WEIGHTS = _PARAMS['weights']
+CORE = {
+    'b12': {'analyte': 'total_vitamin_b12', 'unit': 'pmol/L',
+            'units': {'pmol/L': 1, 'pg/mL': 0.738, 'ng/L': 0.738},
+            'anchors': [(0, 0), (150, 50), (220, 80), (300, 100)]},
+    'ferritin': {'analyte': 'ferritin', 'unit': 'ug/L',
+                 'units': {'ug/L': 1, 'µg/L': 1, 'μg/L': 1, 'ng/mL': 1},
+                 'anchors': [(0, 0), (15, 40), (30, 75), (100, 100)]},
+}
 _D = _PARAMS['vitamin_d']
-_MARKERS = ('vitamin_d', *_PARAMS['context_only'])
+_MARKERS = ('vitamin_d', *WEIGHTS, *_PARAMS['context_only'])
 _CONTEXT_FIELDS = ('vitamin_d_supplementation', 'vitamin_d_treatment', 'relevant_conditions')
 
 
@@ -177,6 +186,79 @@ def _observation(marker, raw, today, eligible_reference):
     return o
 
 
+def _core_component(marker, observations, request, common_reasons):
+    config = CORE[marker]
+    c = {'score': None, 'display_score': None, 'status': 'unavailable',
+         'weight': WEIGHTS[marker], 'weighted_contribution': None,
+         'observation_id': None, 'reasons': list(common_reasons), 'notices': []}
+    candidates = [o for o in observations if o['marker'] == marker]
+    selector = request.get('selected_observation_ids', {}).get(marker)
+    matches = [o for o in candidates if o['observation_id'] == selector] if selector is not None else candidates
+    if len(matches) != 1:
+        c['reasons'].append('missing_' + marker if not candidates else 'selection_required')
+        return c, None
+    o = matches[0]
+    raw = o['observation']
+    if not isinstance(raw, dict):
+        c['reasons'].append('invalid_observation')
+        return c, None
+    c['observation_id'] = o['observation_id']
+    c['notices'] = deepcopy(o['notices'])
+    c['reasons'].extend(o['errors'] + o['metadata_reasons'] + o['reliability_reasons'])
+    unit = raw.get('unit')
+    factor = config['units'].get(unit) if isinstance(unit, str) else None
+    if factor is None:
+        c['reasons'].append('unsupported_unit')
+    if raw.get('analyte') != config['analyte']:
+        c['reasons'].append('unsupported_analyte')
+    if raw.get('specimen_type') not in ('serum', 'plasma'):
+        c['reasons'].append('unsupported_or_unknown_specimen_type')
+    if o['qualifier'] != '=':
+        c['reasons'].append('bounded_result')
+    if not _finite(raw.get('value')):
+        c['reasons'].append('invalid_value')
+    lower, upper = raw.get('lower_limit'), raw.get('upper_limit')
+    range_ok = (raw.get('reference_range_applicable') is True and factor is not None
+                and raw.get('reference_unit', unit) == unit
+                and raw.get('reference_analyte', marker) == marker
+                and raw.get('reference_specimen_type', raw.get('specimen_type')) == raw.get('specimen_type')
+                and _finite(lower, zero=True) and _finite(upper) and lower < upper)
+    if not range_ok:
+        c['reasons'].append('applicable_reference_range_required')
+    elif upper * factor < config['anchors'][-1][0]:
+        c['reasons'].append('reference_range_incompatible_with_curve')
+    elif _finite(raw.get('value')) and raw['value'] > upper:
+        c['reasons'].append('above_reference_range_review')
+    context = request.get('context', {})
+    fields = ('iron_confounders', 'recent_iron_treatment_or_transfusion') if marker == 'ferritin' else ('b12_supplementation_or_treatment',)
+    for field in fields:
+        state = context.get(field, 'unknown')
+        if state not in ('absent', 'present', 'unknown'):
+            state = 'unknown'
+        if marker == 'ferritin' and state == 'present':
+            c['reasons'].append(field + '_present')
+        if state != 'absent':
+            _notice(c, field + '_' + state, f'{field.replace("_", " ")} is {state}; nutrient adequacy cannot be inferred.')
+    if marker == 'ferritin':
+        _notice(c, 'ferritin_interpretation_limit', 'Ferritin can rise with inflammation or illness. Missing CRP does not exclude inflammation; these points do not establish iron sufficiency.')
+    if not c['reasons']:
+        value = raw['value'] * factor
+        if not _finite(value):
+            c['reasons'].append('invalid_normalized_value')
+        else:
+            anchors = config['anchors']
+            points = 100.0
+            for (x0, y0), (x1, y1) in zip(anchors, anchors[1:]):
+                if value <= x1:
+                    points = y0 + (value - x0) * (y1 - y0) / (x1 - x0)
+                    break
+            c.update(score=points, display_score=display_score(points), status='scored',
+                     normalized_value=value, normalized_unit=config['unit'],
+                     weighted_contribution=points * WEIGHTS[marker])
+    c['reasons'] = list(dict.fromkeys(c['reasons']))
+    return c, o
+
+
 def score_nutrition(request, *, today=None):
     """Return a new JSON-safe result. Supply evaluation_date in request or explicit today.
 
@@ -186,7 +268,7 @@ def score_nutrition(request, *, today=None):
     if not isinstance(request, dict):
         raise ValueError('request must be an object')
     _safe(request)  # Validate supported Python value types before numerical processing.
-    for key in ('person', 'context', 'observations'):
+    for key in ('person', 'context', 'observations', 'selected_observation_ids'):
         if not isinstance(request.get(key, {}), dict):
             raise ValueError(f'{key} must be an object')
     if today is not None and type(today) is not date:
@@ -294,6 +376,40 @@ def score_nutrition(request, *, today=None):
             {'code': 'limited_nutrition_coverage', 'text': 'This component does not measure overall nutrition or diet quality.'},
             {'code': 'provisional_points', 'text': 'Experimental points are not clinically validated or a disease probability.'}],
     }
+    components, selected = {}, []
+    common = evaluation_reasons + eligibility_reasons + ([] if _finite(age) else ['invalid_age'])
+    for marker in WEIGHTS:
+        component, observation = _core_component(marker, observations, request, common)
+        components[marker] = component
+        if observation is not None:
+            selected.append(observation)
+    reasons = [f'{m}:{reason}' for m, component in components.items() for reason in component['reasons']]
+    if not reasons and len(selected) == 2 and len({(o['observation'].get('specimen_date'), o['observation'].get('report_id'), o['observation'].get('specimen_type')) for o in selected}) != 1:
+        reasons.append('core_collection_mismatch')
+    total = sum(c['weighted_contribution'] for c in components.values()) if not reasons else None
+    result.update(domain_score=total, score=total, display_score=display_score(total),
+                  status='scored' if total is not None else 'unavailable',
+                  domain_aggregation_status='fixed_core', weights=deepcopy(WEIGHTS), reasons=reasons)
+    result['components'].update(components)
+    for key in ('available', 'unusable'):
+        result['coverage'][key] = [entry for entry in result['coverage'][key] if entry['marker'] not in WEIGHTS]
+    for index, observation in enumerate(observations):
+        marker = observation['marker']
+        if marker not in WEIGHTS:
+            continue
+        component = components[marker]
+        selected_result = observation['observation_id'] == component['observation_id'] and component['observation_id'] is not None
+        entry = {'marker': marker, 'observation_id': observation['observation_id'],
+                 'observation_index': index,
+                 'reasons': list(component['reasons']) if selected_result else ['not_selected']}
+        result['coverage']['unusable' if entry['reasons'] else 'available'].append(entry)
+        if selected_result and component['score'] is not None:
+            observation.update(normalized_value=component['normalized_value'], normalized_unit=component['normalized_unit'])
+    result['coverage'].update(scored_component_count=sum(c['score'] is not None for c in components.values()),
+                              defined_component_count=2, required=list(WEIGHTS),
+                              missing=[{'marker': m, 'reasons': ['missing_' + m]} for m in WEIGHTS if not any(o['marker'] == m for o in observations)],
+                              missing_requirements=reasons)
+    result['notices'][0]['text'] = 'Nutrition summarizes B12 and ferritin only, not diet quality, protein intake or overall nutrient adequacy. Vitamin D is a separate optional component.'
     return _safe(result)
 
 

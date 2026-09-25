@@ -1,3 +1,5 @@
+> Superseded 25 September 2026: the implemented [v0.2 model](SYSTEM_STABILITY_V02_SPEC.md) now supplies sodium–potassium points and one domain total. The design and pending-work statements below are historical.
+
 # System Stability v0.1 — specification
 
 Prepared 2026-09-24. **Stages 1–3 complete: preliminary specification, Python engine and descriptive behavior evaluation.** See [engine usage and contract](SYSTEM_STABILITY_ENGINE_README.md) and [NHANES evaluation](nhanes_inventory/system_stability_v01_evaluation.md). Stage 4 is implemented in the shared [dashboard](DASHBOARD_README.md); desktop/mobile visual verification remains outstanding. No deep learning. Parameters: [system_stability_v01_parameters.json](system_stability_v01_parameters.json). The decision log and implementation acceptance cases are below.

@@ -67,7 +67,7 @@ class DashboardTests(unittest.TestCase):
             self.assertEqual(status, 200)
             result = json.loads(data)
             self.assertEqual(result, score_system_stability(request))
-            self.assertIsNone(result['domain_score'])
+            self.assertEqual(result['domain_score'], None if value is None else 80 if value == 5.5 else 100)
         self.assertEqual(result['panel_status'], 'outside_reference')
 
     def test_stability_asset_and_request_restrictions(self):
@@ -83,7 +83,7 @@ class DashboardTests(unittest.TestCase):
             self.assertEqual(status, 200)
             result = json.loads(data)
             self.assertEqual(result, score_nutrition(request))
-            self.assertIsNone(result['domain_score'])
+            self.assertEqual(result['domain_score'], 75)
             self.assertTrue(result['observations'][1]['notices'])
         del request['evaluation_date']
         status, data, _ = self.call('POST', '/score/nutrition', json.dumps(request), {'Content-Type': 'application/json'})
@@ -111,7 +111,12 @@ class DashboardTests(unittest.TestCase):
             self.assertEqual(status, 200)
             result = json.loads(data)
             self.assertEqual(result, score_inflammation(request))
-            self.assertIsNone(result['domain_score'])
+            if (value, qualifier) == (2, '='):
+                self.assertAlmostEqual(result['domain_score'], 82.1818181818)
+            elif (value, qualifier) == (1, '<'):
+                self.assertAlmostEqual(result['domain_score'], 98.1818181818)
+            else:
+                self.assertIsNone(result['domain_score'])
             self.assertTrue(result['observations'][1]['notices'])
         self.assertEqual(self.call('POST', '/score/inflammation', '[]', {'Content-Type': 'application/json'})[0], 400)
         self.assertEqual(self.call('POST', '/score/inflammation', None, {'Content-Type': 'application/json', 'Origin': 'https://example.com'})[0], 403)
@@ -130,13 +135,12 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(status, 200)
         result = json.loads(data)
         self.assertEqual(result, score_liver_kidney(request))
-        self.assertIsNone(result['domain_score'])
         return result
 
     def test_organ_example_and_domain_isolation(self):
         result = self.organ_score(self.organ_example)
         self.assertEqual(result['components']['kidney']['display_score'], '87.5')
-        self.assertEqual(result['components']['liver']['display_score'], '75.0')
+        self.assertEqual(result['components']['liver']['display_score'], '85.0')
         status, data, _ = self.call('POST', '/score/metabolism', json.dumps(self.example), {'Content-Type': 'application/json'})
         self.assertEqual(status, 200)
         self.assertEqual(json.loads(data), self.score(self.example))
@@ -150,7 +154,7 @@ class DashboardTests(unittest.TestCase):
         self.assertEqual(kidney['score_envelope'], [75, 100])
         request['observations']['egfr'].update(value=90, qualifier='>=')
         self.assertEqual(self.organ_score(request)['components']['kidney']['display_score'], '100.0')
-        del request['observations']['ast']
+        del request['observations']['alp']
         self.assertIsNone(self.organ_score(request)['components']['liver']['score'])
         del request['observations']['egfr']['specimen_date']
         self.assertIsNone(self.organ_score(request)['components']['kidney']['score'])

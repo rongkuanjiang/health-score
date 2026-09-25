@@ -1,10 +1,16 @@
 {
   "evaluation_date": "2026-09-24",
-  "person": {"age": 40, "pregnancy_status": "not_pregnant"},
+  "person": {
+    "age": 40,
+    "pregnancy_status": "not_pregnant"
+  },
   "context": {
     "vitamin_d_supplementation": "unknown",
     "vitamin_d_treatment": "absent",
-    "relevant_conditions": "unknown"
+    "relevant_conditions": "unknown",
+    "iron_confounders": "absent",
+    "recent_iron_treatment_or_transfusion": "absent",
+    "b12_supplementation_or_treatment": "unknown"
   },
   "observations": {
     "vitamin_d": {
@@ -29,6 +35,32 @@
       "upper_limit": 50,
       "reference_range_applicable": true,
       "lab_flag": "Low (synthetic example range)"
+    },
+    "b12": {
+      "observation_id": "synthetic-b12",
+      "value": 150,
+      "unit": "pmol/L",
+      "analyte": "total_vitamin_b12",
+      "specimen_type": "serum",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01",
+      "reliability": "valid",
+      "lower_limit": 150,
+      "upper_limit": 600,
+      "reference_range_applicable": true
+    },
+    "ferritin": {
+      "observation_id": "synthetic-ferritin",
+      "value": 100,
+      "unit": "ug/L",
+      "analyte": "ferritin",
+      "specimen_type": "serum",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01",
+      "reliability": "valid",
+      "lower_limit": 15,
+      "upper_limit": 300,
+      "reference_range_applicable": true
     }
   }
 }

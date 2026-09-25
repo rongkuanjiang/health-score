@@ -32,14 +32,14 @@ def codes(r):
 
 
 class InflammationTests(unittest.TestCase):
-    def test_worked_examples_and_no_domain_total(self):
+    def test_worked_examples_and_domain_total(self):
         for value, expected in [(0.5,100),(1,100),(1.5,90),(2,80),(3,60),(6.5,40),(10,20)]:
             with self.subTest(value=value):
                 r = score(profile(value))
                 self.assertEqual(r['components']['hs_crp']['score'], expected)
-                self.assertEqual(r['status'], 'component_available')
-                self.assertIsNone(r['domain_score'])
-                self.assertEqual(r['domain_aggregation_status'], 'limited_marker_coverage')
+                self.assertEqual(r['status'], 'scored')
+                self.assertAlmostEqual(r['domain_score'], expected*.8 + (100*(2-12/11))*.2)
+                self.assertEqual(r['domain_aggregation_status'], 'fixed_core_weighted_mean')
                 self.assertEqual(r['coverage']['missing_requirements'], [])
 
     def test_monotonicity_continuity_and_upper_boundary(self):
@@ -89,11 +89,11 @@ class InflammationTests(unittest.TestCase):
         hs=r['observations'].pop('hs_crp')
         r['observations']['standard_crp']=hs
         out=score(r)
-        self.assertEqual(out['status'],'context_only')
+        self.assertEqual(out['status'],'partial')
         self.assertIsNone(out['components']['hs_crp']['score'])
         self.assertFalse(out['coverage']['hs_crp_present'])
         r['observations'].pop('standard_crp')
-        self.assertEqual(score(r)['status'],'context_only')
+        self.assertEqual(score(r)['status'],'partial')
         self.assertEqual(score({})['status'],'unavailable')
 
     def test_assay_and_research_equivalence(self):

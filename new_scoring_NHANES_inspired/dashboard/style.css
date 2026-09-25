@@ -224,3 +224,189 @@ a {color:var(--accent);text-underline-offset:3px}
   .unified-domain>summary strong {min-width:0;flex:1}
   .inline-domain-status {max-width:none;margin-left:0;padding-left:46px}
 }
+
+/* Compact overview and focused domain workspace. */
+main {max-width:1320px;padding:24px}
+header {padding:14px 4%}
+.banner {padding:10px 16px;font-size:12px}
+.overview-heading {margin:20px 0 16px;gap:16px}
+.overview h1 {font-size:32px;letter-spacing:-1px;margin:6px 0}
+.overview-heading p {margin:6px 0}
+.overview-prompt {padding:16px 20px;margin-bottom:16px;gap:16px}
+.overview-prompt h2 {font-size:19px}
+.overview-prompt p {font-size:13px}
+.dashboard-actions {flex-direction:row;gap:8px}
+button {padding:10px 14px;min-height:40px}
+.overview-cards {grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:16px;align-items:start}
+.overview-card {padding:14px 12px;border-radius:10px;border-top-width:3px}
+.overview-card .eyebrow {letter-spacing:.6px;min-height:28px;line-height:1.4;font-size:9px}
+.overview-card h2 {font-size:17px;margin:6px 0 10px;min-height:44px}
+.overview-card p {margin:5px 0;line-height:1.4}
+.overview-card .overview-value {font-size:30px}
+.overview-points strong {font-size:26px}
+.overview-card .muted,.example-label {font-size:11px}
+.overview-card .notice {padding:8px;font-size:11px}
+.overview-card details {margin:8px 0;font-size:11px}
+.overview-card button {margin-top:10px;padding:8px;min-height:40px}
+.example-label {padding:5px 7px}
+.profile-panel {grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:16px 24px;margin:16px 0;gap:16px}
+.profile-panel h2 {font-size:23px}
+.profile-panel p {line-height:1.5;margin:10px 0}
+#radar-status {font-size:14px;max-width:400px}
+#domain-radar {width:100%;max-width:400px;justify-self:center}
+.chart-key,.chart-explainer {margin-top:12px}
+.radar-profile {fill:var(--accent);fill-opacity:.13;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round}
+.radar-connection {stroke:var(--accent);stroke-width:2.5;fill:none}
+.wearable-summary {padding:14px 20px;margin:12px 0;gap:12px}
+.wearable-summary .eyebrow {margin:0 0 5px}
+.wearable-summary h2 {font-size:18px}
+.wearable-summary p {margin:5px 0}
+.sticky-domain-nav {position:sticky;top:0;z-index:10;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:16px 0}
+.sticky-domain-nav button {font-size:12px;padding:10px 6px;background:var(--surface);color:var(--accent);border-color:transparent}
+.sticky-domain-nav button:hover {background:var(--tint)}
+.sticky-domain-nav button[aria-expanded="true"] {background:var(--accent);color:var(--button-ink)}
+.editor-heading {margin:16px 0;gap:12px}
+.editor-heading h2 {font-size:21px}
+.editor-heading p {margin:5px 0}
+.editor-heading .eyebrow {font-size:10px}
+.unified-domain {margin:10px 0;scroll-margin-top:95px;border-radius:10px}
+.unified-domain>summary {padding:13px 16px;gap:12px}
+.unified-domain>summary strong {font-size:17px}
+.domain-number {min-width:30px;height:30px;border-radius:7px}
+.unified-domain[open]>summary {margin-bottom:12px}
+.unified-domain>div {padding:0 16px 16px}
+.unified-domain .panel {padding:16px;margin:12px 0;border-radius:10px;box-shadow:none}
+.unified-domain .panel>h3 {font-size:16px;margin:0 0 10px}
+.unified-domain .panel>p {font-size:12px;line-height:1.5}
+.unified-domain .section-head {margin-bottom:14px}
+.unified-domain .section-head h2 {font-size:18px}
+.unified-domain .grid {gap:12px}
+.unified-domain .toolbar {margin:12px 0;gap:10px}
+.unified-domain .toolbar label {min-width:200px}
+.unified-domain .organ-measurement {padding:12px;margin:10px 0}
+.unified-domain .organ-measurement .grid+.grid {margin-top:12px}
+.unified-domain .education {margin-top:12px}
+.unified-domain .panel>.education:first-child {margin:0}
+.compact-body {padding:0 14px 14px}
+.compact-body>.section-head {display:none}
+.compact-body>h3 {font-size:15px}
+.compact-body>details {margin:12px 0}
+.compact-body>p {font-size:12px}
+.unified-domain td {padding:9px 8px}
+.unified-domain .check {margin:14px 0}
+:focus-visible {outline:3px solid var(--focus);outline-offset:3px}
+@media(max-width:1000px){
+  .overview-cards {grid-template-columns:repeat(3,minmax(0,1fr))}
+  .overview-card h2 {min-height:0}
+  .dashboard-actions {flex-direction:column}
+}
+@media(max-width:600px){
+  main {padding:16px 12px}
+  .overview h1 {font-size:27px}
+  .overview-heading {gap:10px}
+  .overview-cards {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .overview-card:last-child {grid-column:1/-1}
+  .overview-prompt {padding:14px;gap:12px}
+  .dashboard-actions {flex-direction:row;flex-wrap:wrap}
+  .dashboard-actions button {flex:1}
+  .profile-panel {grid-template-columns:1fr;padding:14px;gap:0}
+  .profile-panel>div:first-child {padding:0}
+  .sticky-domain-nav {display:flex;overflow-x:auto;flex-wrap:nowrap;border-radius:8px;gap:4px;padding:6px}
+  .sticky-domain-nav button {flex:0 0 auto;white-space:nowrap;font-size:11px;min-height:42px}
+  .unified-domain {scroll-margin-top:78px}
+  .unified-domain>summary {padding:12px}
+  .unified-domain>div {padding:0 10px 10px}
+  .unified-domain .panel {padding:12px}
+  .unified-domain .toolbar label {min-width:100%}
+  .inline-domain-status {padding-left:42px}
+}
+@media(prefers-reduced-motion:reduce){html {scroll-behavior:auto}}
+
+/* Overview and domain workspaces occupy the same dashboard surface. */
+.overview-heading>div {margin-right:auto}
+.dashboard-home-button[aria-current="page"] {background:var(--tint)}
+.dashboard-home {display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
+.dashboard-home>.overview-prompt {grid-column:1/-1;margin:0}
+.dashboard-home>.overview-cards {grid-template-columns:repeat(2,minmax(0,1fr));margin:0;gap:10px}
+.dashboard-home .overview-card:last-child {grid-column:1/-1}
+.dashboard-home .overview-card {position:relative;padding:12px}
+.dashboard-home .overview-card h2 {min-height:0;margin:4px 0 6px;font-size:17px}
+.dashboard-home .overview-card .eyebrow {min-height:0}
+.dashboard-home .overview-card button {margin-top:8px;min-height:36px;padding:6px}
+.dashboard-home .overview-points strong {font-size:25px}
+.dashboard-home>.profile-panel {display:flex;flex-direction:column;margin:0;padding:18px;gap:0;align-items:stretch}
+.dashboard-home .profile-panel h2 {font-size:21px}
+.dashboard-home #domain-radar {max-width:380px;align-self:center;order:-1}
+.dashboard-home .profile-panel .eyebrow {display:none}
+.dashboard-home .profile-panel p {margin:8px 0}
+.dashboard-home .chart-key {display:none}
+.dashboard-home>.wearable-summary {grid-column:1/-1;margin:0;padding:12px 16px}
+.dashboard-home .wearable-summary>div {display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.dashboard-home .wearable-summary .eyebrow {display:none}
+.dashboard-home>.overview-cards {grid-template-columns:1fr}
+.dashboard-home .overview-card {display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:4px 12px;align-items:center;border-top:1px solid var(--line);border-left:3px solid var(--accent)}
+.dashboard-home .overview-card>.eyebrow {display:none}
+.dashboard-home .overview-card h2 {grid-column:1;grid-row:1;font-size:16px;margin:0}
+.dashboard-home .overview-card>.overview-points,.dashboard-home .overview-card>.overview-value {grid-column:2;grid-row:1;margin:0}
+.dashboard-home .overview-points strong,.dashboard-home .overview-value {font-size:22px}
+.dashboard-home .overview-card>button {grid-column:3;grid-row:1/3;margin:0;width:auto;padding:8px 12px}
+.dashboard-home .overview-card>.muted {grid-column:1;grid-row:2;margin:0}
+.dashboard-home .overview-card>details {grid-column:2;grid-row:2;margin:0}
+.dashboard-home .overview-card>details[open] {grid-column:1/-1;grid-row:auto}
+.dashboard-home .overview-card>.notice {grid-column:1/-1;margin:2px 0;padding:5px 8px}
+.dashboard-home .overview-card>.example-label {grid-column:1/-1;background:transparent;padding:0;margin:0;font-size:10px;color:var(--muted)}
+.dashboard-home>.overview-prompt {padding:12px 16px}
+.dashboard-home .overview-prompt h2 {display:none}
+.dashboard-home #dashboard-progress {margin-top:5px}
+.overview-heading {margin:14px 0}
+.overview-heading .eyebrow {display:none}
+.overview h1 {font-size:28px}
+.dashboard-home #domain-radar {max-width:340px}
+.dashboard-home .overview-card h2 .example-label {display:inline-block;font-size:9px;font-weight:400;padding:2px 4px;margin-left:6px;vertical-align:middle}
+@media(min-width:1001px){
+  header {padding:8px 4%}
+  main {padding:16px 24px}
+  .overview-heading {margin:10px 0}
+  .overview h1 {font-size:26px}
+  .sticky-domain-nav {margin:10px 0;padding:5px}
+  .dashboard-home {gap:10px}
+  .dashboard-home>.overview-cards {grid-row:2/4;gap:8px}
+  .dashboard-home>.wearable-summary {grid-column:2;grid-row:3;padding:10px 14px;flex-wrap:wrap}
+  .dashboard-home>.wearable-summary>div {gap:6px}
+  .dashboard-home>.overview-prompt {padding:10px 14px}
+  .dashboard-home .overview-card {padding:10px 12px}
+  .dashboard-home #domain-radar {max-width:280px}
+  .dashboard-home>.profile-panel {padding:12px 16px}
+  .dashboard-home .profile-panel h2 {font-size:18px}
+  .dashboard-home .profile-panel p {font-size:12px;margin:6px 0}
+  footer {margin:14px 0 0;font-size:11px}
+}
+.biomarker-editor .unified-domain>summary {display:none}
+.biomarker-editor .unified-domain {border:0;background:transparent;overflow:visible;margin:0}
+.biomarker-editor .unified-domain>div {padding:0}
+.biomarker-editor .editor-heading .eyebrow {display:none}
+.biomarker-editor .editor-heading {margin:12px 0}
+.workspace-switcher {display:flex;gap:8px;margin:10px 0}
+.workspace-switcher button[aria-pressed="true"] {background:var(--accent);color:var(--button-ink)}
+@media(min-width:1001px){
+  .workspace-scroll {max-height:calc(100dvh - 480px);min-height:250px;overflow:auto;scrollbar-gutter:stable;padding-right:10px}
+}
+.workspace-scroll p {font-size:13px;line-height:1.5;margin:8px 0}
+.workspace-scroll h4 {margin:12px 0 6px}
+.workspace-scroll .notice {padding:8px 12px}
+.demo-hint {flex-basis:100%;font-size:11px!important;margin:0!important;text-align:right}
+.dashboard-actions {flex-wrap:wrap;max-width:380px;justify-content:flex-end}
+.example-scenarios {margin:0;align-self:center}
+.example-scenarios>summary {font-size:12px;color:var(--muted)}
+.example-scenarios[open] {flex-basis:100%}
+.example-scenarios[open]>label {margin:12px 0 8px}
+.example-scenarios[open]>button {margin-bottom:8px}
+@media(max-width:600px){.demo-hint {text-align:left}.dashboard-actions {max-width:none}}
+@media(max-width:760px){
+  .dashboard-home {grid-template-columns:1fr}
+  .dashboard-home>.profile-panel {grid-column:1}
+  .dashboard-home #domain-radar {max-width:320px}
+  .overview-heading {flex-wrap:wrap}
+  .overview-heading>div {width:100%}
+  .overview-heading {flex-direction:row;align-items:center}
+}

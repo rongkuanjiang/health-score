@@ -1,3 +1,5 @@
+> Update 25 September 2026: inflammation now uses the provisional v0.2 fixed-core hs-CRP/WBC domain total. See [current specification](INFLAMMATION_V02_SPEC.md). Earlier marker-only/null-total descriptions below are historical. Nutrition and system stability are unchanged.
+
 # Inflammation v0.1 — implementation specification
 
 Update 2026-09-24: stage 4 is implemented in the shared [dashboard](DASHBOARD_README.md), using these unchanged rules. Automated engine, HTTP and DOM checks pass; desktop/mobile visual review remains outstanding. Earlier stage-status text below is retained as a historical checkpoint.

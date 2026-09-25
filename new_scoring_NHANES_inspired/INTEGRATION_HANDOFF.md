@@ -1,3 +1,9 @@
+> Nutrition update, 25 September 2026: [v0.2](NUTRITION_V02_SPEC.md) now provides one provisional B12/ferritin total (50% each), with vitamin D separate and optional. Prior vitamin-D-only/null-total descriptions are historical.
+
+> Update 25 September 2026: inflammation now uses the provisional v0.2 fixed-core hs-CRP/WBC domain total. See [current specification](INFLAMMATION_V02_SPEC.md). Earlier marker-only/null-total descriptions below are historical. Nutrition and system stability are unchanged.
+
+> Current organ-stress model (25 September 2026): v0.2 now combines eGFR (50%), ALT (30%) and ALP (20%) into one domain score. AST and bilirubin are optional context. See [the current specification](ORGAN_STRESS_V02_SPEC.md) for inputs, curves, missing-data rules and Canadian source rationale. The v0.1 descriptions and evaluation results below are historical and do not validate v0.2.
+
 # Health scorer integration handoff
 
 Package **0.1.2**, shared API **1.0**, prepared 24 September 2026. All five domain engines and dashboard panels are included, with a questionnaire, unified five-domain dashboard, inline biomarker sections, calculate-all action and pentagon visualization. Numerical parameters are unchanged. This is a preliminary integration release, not clinical validation or a hosted production service. No overall health score is defined.
@@ -74,10 +80,10 @@ The JSON Schema validates the shared envelope. **It is not a complete schema for
 | Domain ID | Input/output contract | Main result paths inside `result` |
 |---|---|---|
 | `metabolism` | [Metabolism](ENGINE_README.md), [age amendment](AGE_EXTENSION_AND_DETAILS.md) | `score`, `display_score`, `markers`, `components`, `flags`, `blocking_reasons`, `coverage` |
-| `organ-stress` | [Liver/kidney](LIVER_KIDNEY_ENGINE_README.md) | `components.kidney`, `components.liver`, `flags`, `coverage`; `domain_score` is null |
+| `organ-stress` | [Liver/kidney](LIVER_KIDNEY_ENGINE_README.md) | `domain_score` / `score`, `weights`, `weighted_contributions`, `components`, `flags`, `coverage`; see [v0.2](ORGAN_STRESS_V02_SPEC.md) |
 | `inflammation` | [Inflammation](INFLAMMATION_ENGINE_README.md) | `components.hs_crp`, `observations`, `notices`, `coverage`; `domain_score` is null |
-| `nutrition` | [Nutrition](NUTRITION_ENGINE_README.md) | `components.vitamin_d`, `observations`, `notices`, `coverage`; `domain_score` is null |
-| `system-stability` | [System Stability](SYSTEM_STABILITY_ENGINE_README.md) | `panel_status`, `observations`, `context_observations`, `notices`, `coverage`; all scores are null |
+| `nutrition` | [Nutrition](NUTRITION_ENGINE_README.md) | `domain_score`, B12/ferritin components, optional `components.vitamin_d`, observations, notices and coverage |
+| `system-stability` | [System Stability v0.2](SYSTEM_STABILITY_V02_SPEC.md) | `domain_score`, `marker_scores`, `weights`, `weighted_contributions`, `score_reasons`; fixed sodium/potassium core, with supplemental reference `panel_status` and notices |
 
 Enums intentionally remain domain-specific. For example, metabolism pregnancy uses `no`/`yes`; other point engines use `not_pregnant`/`pregnant`. System Stability reliability uses `not_flagged`, unlike the point engines' `valid`. Do not pass one domain's enums to another or infer a technical assertion from a missing field. Importers must explicitly map their source data to each documented contract. A unified importer is app-specific work.
 

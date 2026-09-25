@@ -1,4 +1,4 @@
-"""Acceptance and failure-path checks against LIVER_KIDNEY_V01_SPEC.md."""
+"""Organ-stress v0.2 and retained kidney-equation acceptance checks."""
 from copy import deepcopy
 from datetime import date
 import json
@@ -15,13 +15,13 @@ def observation(value, unit):
             'specimen_date': '2026-09-01', 'reliability': 'valid'}
 
 
-def profile(egfr=90, alt=20, ast=30):
+def profile(egfr=90, alt=20, alp=30):
     r = {'person': {'age': 40, 'equation_sex': 'male', 'pregnancy_status': 'not_pregnant'},
          'context': {'dialysis': 'no', 'acute_kidney_injury': 'no'},
          'observations': {'egfr': observation(egfr, 'mL/min/1.73m2'),
-                          'alt': observation(alt, 'U/L'), 'ast': observation(ast, 'U/L')}}
+                          'alt': observation(alt, 'U/L'), 'alp': observation(alp, 'U/L')}}
     r['observations']['egfr']['equation'] = ADULT
-    for key in ('alt', 'ast'):
+    for key in ('alt', 'alp'):
         r['observations'][key].update(lower_limit=5, upper_limit=40, reference_range_applicable=True)
     return r
 
@@ -57,13 +57,13 @@ def codes(r):
 class LiverKidneyTests(unittest.TestCase):
     def test_worked_examples(self):
         for values, expected in [((90, 20, 30), (100, 100)), ((45, 20, 30), (50, 100)),
-                                 ((75, 80, 40), (87.5, 75)), ((90, 200, 400), (100, 15)),
+                                 ((75, 80, 40), (87.5, 85)), ((90, 200, 400), (100, 30)),
                                  ((90, 4, 30), (100, None))]:
             with self.subTest(values=values):
                 r = score(profile(*values))
                 self.assertEqual(tuple(r['components'][k]['score'] for k in ('kidney', 'liver')), expected)
-                self.assertIsNone(r['domain_score'])
-                self.assertEqual(r['aggregation_status'], 'aggregation_not_defined')
+                self.assertEqual(r['domain_score'], None if expected[1] is None else 0.5 * sum(expected))
+                self.assertEqual(r['aggregation_status'], 'insufficient_core_data' if expected[1] is None else 'fixed_weight_complete_core')
         self.assertIn('egfr_below_60', codes(kidney(profile(45))))
 
     def test_every_anchor_midpoint_continuity_and_plateau(self):
@@ -77,9 +77,9 @@ class LiverKidneyTests(unittest.TestCase):
         for egfr, expected in _PARAMS['kidney']['anchors'][1:]:
             self.assertEqual(kidney(profile(egfr))['score'], expected)
         for ratio, expected in _PARAMS['liver']['upper_limit_ratio_anchors']:
-            self.assertEqual(liver(profile(90, ratio*40, 20))['score'], expected)
+            self.assertEqual(liver(profile(90, ratio*40, 20))['markers']['alt']['score'], expected)
         self.assertEqual(liver(profile(90, 5, 40))['score'], 100)
-        self.assertEqual(liver(profile(90, 1000, 20))['score'], 0)
+        self.assertEqual(liver(profile(90, 1000, 20))['score'], 40)
 
     def test_bounds(self):
         for q, value, expected, envelope in [('>', 60, None, [75, 100]), ('>=', 90, 100, [100, 100]),
@@ -115,7 +115,7 @@ class LiverKidneyTests(unittest.TestCase):
         r = profile()
         r['observations']['egfr']['unit'] = 'mL/min/1.73m²'
         r['observations']['alt']['unit'] = 'IU/L'
-        self.assertEqual(score(r)['status'], 'components_available')
+        self.assertEqual(score(r)['status'], 'scored')
 
     def test_u25_examples_and_height_conversion(self):
         r = calculated(18, U25)
@@ -199,7 +199,7 @@ class LiverKidneyTests(unittest.TestCase):
         r = profile()
         r['person']['age'] = 85
         self.assertIn('older_age_limited_evidence', codes(score(r)))
-        self.assertEqual(score(r)['status'], 'components_available')
+        self.assertEqual(score(r)['status'], 'scored')
 
     def test_dialysis_aki_independent_liver_and_unknowns(self):
         for field in ('dialysis', 'acute_kidney_injury'):
@@ -233,23 +233,24 @@ class LiverKidneyTests(unittest.TestCase):
 
     def test_snapshots_and_dates(self):
         r = profile()
-        r['observations']['ast']['report_id'] = 'different'
+        r['observations']['alp']['report_id'] = 'different'
         self.assertIn('report_id_mismatch', liver(r)['reasons'])
         r = profile()
-        r['observations']['ast']['specimen_date'] = '2026-09-02'
+        r['observations']['alp']['specimen_date'] = '2026-09-02'
         r['context']['same_snapshot_confirmed'] = True
         self.assertIn('specimen_date_mismatch', liver(r)['reasons'])
         for stamp in ('bad', '2026-02-30', '2026-09-25', True, '20260901'):
             r = profile()
             for key in ('egfr', 'alt'):
                 r['observations'][key]['specimen_date'] = stamp
-            self.assertEqual(score(r)['status'], 'unavailable')
+            self.assertEqual(score(r)['status'], 'partial')
+            self.assertIsNone(score(r)['domain_score'])
         r = profile()
-        r['observations']['ast'].pop('specimen_date')
+        r['observations']['alp'].pop('specimen_date')
         self.assertIn('same_snapshot_confirmation_required', liver(r)['reasons'])
         r['context']['same_snapshot_confirmed'] = True
         self.assertEqual(liver(r)['score'], 100)
-        r['observations']['ast']['report_id'] = ''
+        r['observations']['alp']['report_id'] = ''
         self.assertIsNone(liver(r)['score'])
         r = profile()
         r['observations']['egfr']['specimen_date'] = '2000-01-01'
@@ -274,7 +275,7 @@ class LiverKidneyTests(unittest.TestCase):
             r['observations'][key]['unit'] = 'mL/min'
             self.assertEqual(score(r)['status'], 'partial')
         r = profile()
-        r['observations'].pop('ast')
+        r['observations'].pop('alp')
         self.assertEqual(liver(r)['coverage']['available'], 1)
         self.assertEqual(liver(r)['markers']['alt']['score'], 100)
         self.assertEqual(score({})['status'], 'unavailable')
@@ -283,7 +284,7 @@ class LiverKidneyTests(unittest.TestCase):
         r = profile()
         r['optional_observations'] = {'uacr': dict(observation(100, 'mg/g'), lab_flag='high')}
         output = score(r)
-        self.assertEqual(output['status'], 'components_available')
+        self.assertEqual(output['status'], 'scored')
         self.assertIn('laboratory_flag', codes(output))
         self.assertIn('laboratory_flag', codes(output['components']['kidney']))
         self.assertNotIn('uacr_missing_or_unusable', codes(output))

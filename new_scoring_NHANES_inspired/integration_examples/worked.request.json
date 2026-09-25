@@ -76,11 +76,11 @@
           "report_id": "synthetic-report",
           "specimen_date": "2026-09-01"
         },
-        "ast": {
-          "value": 40,
+        "alp": {
+          "value": 80,
           "unit": "U/L",
-          "lower_limit": 5,
-          "upper_limit": 40,
+          "lower_limit": 40,
+          "upper_limit": 120,
           "reference_range_applicable": true,
           "reliability": "valid",
           "report_id": "synthetic-report",
@@ -131,7 +131,10 @@
       "context": {
         "vitamin_d_supplementation": "unknown",
         "vitamin_d_treatment": "absent",
-        "relevant_conditions": "unknown"
+        "relevant_conditions": "unknown",
+        "iron_confounders": "absent",
+        "recent_iron_treatment_or_transfusion": "absent",
+        "b12_supplementation_or_treatment": "unknown"
       },
       "observations": {
         "vitamin_d": {
@@ -156,11 +159,37 @@
           "upper_limit": 50,
           "reference_range_applicable": true,
           "lab_flag": "Low (synthetic example range)"
+        },
+        "b12": {
+          "observation_id": "synthetic-b12",
+          "value": 150,
+          "unit": "pmol/L",
+          "analyte": "total_vitamin_b12",
+          "specimen_type": "serum",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid",
+          "lower_limit": 150,
+          "upper_limit": 600,
+          "reference_range_applicable": true
+        },
+        "ferritin": {
+          "observation_id": "synthetic-ferritin",
+          "value": 100,
+          "unit": "ug/L",
+          "analyte": "ferritin",
+          "specimen_type": "serum",
+          "report_id": "synthetic-report",
+          "specimen_date": "2026-09-01",
+          "reliability": "valid",
+          "lower_limit": 15,
+          "upper_limit": 300,
+          "reference_range_applicable": true
         }
       }
     },
     "system-stability": {
-      "example_note": "Synthetic acceptance fixture. These reference intervals are not clinical defaults.",
+      "example_note": "Synthetic v0.2 acceptance fixture: sodium 140 and potassium 4 give 100.0/100. Chloride and CO2 support reference comparisons only. Supplied intervals are not clinical defaults.",
       "person": {
         "age": 40,
         "pregnancy_status": "not_applicable"

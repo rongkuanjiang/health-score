@@ -15,6 +15,8 @@ ROOT = Path(__file__).parent
 def profile(value=40):
     request = json.loads((ROOT / 'example_nutrition_request.json').read_text(encoding='utf-8'))
     request['observations']['vitamin_d']['value'] = value
+    request['observations'].pop('b12', None)
+    request['observations'].pop('ferritin', None)
     return request
 
 
@@ -35,11 +37,11 @@ class NutritionTests(unittest.TestCase):
                 self.assertEqual(c['score'], expected)
                 self.assertEqual(c['status'], 'scored')
                 self.assertEqual(c['reasons'], [])
-                self.assertEqual(r['status'], 'component_available')
+                self.assertEqual(r['status'], 'unavailable')
                 self.assertIsNone(r['domain_score'])
-                self.assertEqual(r['domain_aggregation_status'], 'limited_marker_coverage')
-                self.assertEqual(r['coverage']['scored_component_count'], 1)
-                self.assertEqual(r['coverage']['defined_component_count'], 1)
+                self.assertEqual(r['domain_aggregation_status'], 'fixed_core')
+                self.assertEqual(r['coverage']['scored_component_count'], 0)
+                self.assertEqual(r['coverage']['defined_component_count'], 2)
                 self.assertEqual(codes(r), ['limited_nutrition_coverage', 'provisional_points'])
 
     def test_units_and_upper_edge(self):
@@ -105,7 +107,7 @@ class NutritionTests(unittest.TestCase):
             r = score_nutrition(p)
             self.assertIsNone(r['components']['vitamin_d']['score'])
             self.assertEqual(r['status'], 'unavailable')
-            self.assertEqual(r['coverage']['missing'][0]['marker'], 'vitamin_d')
+            self.assertTrue(r['coverage']['missing'])
             self.assertIn('laboratory_flag', codes(r['observations'][0]))
 
     def test_invalid_numeric_inputs_and_strict_serialization(self):
@@ -278,7 +280,7 @@ class NutritionTests(unittest.TestCase):
                                  str(ROOT / 'example_nutrition_request.json')], capture_output=True, text=True, check=True)
         r = json.loads(result.stdout)
         self.assertEqual(r['components']['vitamin_d']['display_score'], '75.0')
-        self.assertIsNone(r['domain_score'])
+        self.assertEqual(r['domain_score'], 75)
 
 
 if __name__ == '__main__':

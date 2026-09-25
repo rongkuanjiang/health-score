@@ -1,4 +1,4 @@
-"""Preliminary hs-CRP component, standard library only. See INFLAMMATION_V01_SPEC.md."""
+"""Provisional baseline hs-CRP/WBC profile. See INFLAMMATION_V02_SPEC.md."""
 from __future__ import annotations
 
 import argparse
@@ -9,11 +9,12 @@ import json
 import math
 from pathlib import Path
 
-_PARAMS = json.loads(Path(__file__).with_name('inflammation_v01_parameters.json').read_text(encoding='utf-8'))
+_PARAMS = json.loads(Path(__file__).with_name('inflammation_v02_parameters.json').read_text(encoding='utf-8'))
 VERSION = _PARAMS['model_version']
+WEIGHTS = _PARAMS['weights']
 _CRP = ('hs_crp', 'standard_crp', 'unknown_assay_crp')
 _COUNTS = ('wbc', 'absolute_neutrophils', 'absolute_lymphocytes', 'other_differential_counts')
-_MARKERS = ('hs_crp', *_PARAMS['context_only'])
+_MARKERS = ('hs_crp', 'wbc', *_PARAMS['context_only'])
 
 
 def _finite(value, zero=False):
@@ -261,7 +262,77 @@ def score_inflammation(request, *, today=None):
         'notices': [{'code': 'limited_marker_coverage', 'text': 'This component does not measure all inflammation or immune function.'},
                     {'code': 'provisional_points', 'text': 'Experimental points are not clinically validated or a disease probability.'}],
     }
-    return _safe(result)
+    return _safe(_aggregate(result, request, duplicate_ids))
+
+
+def _aggregate(result, request, duplicate_ids):
+    """Fixed core; WBC reference conformity is not a measure of immune function."""
+    candidates = [o for o in result['observations'] if o['marker'] == 'wbc']
+    w = {'score': None, 'display_score': None, 'status': 'unavailable',
+         'reasons': [], 'notices': [], 'observation_id': None}
+    selected = request.get('selected_wbc_id')
+    chosen = None
+    if duplicate_ids:
+        w['reasons'].append('duplicate_observation_id')
+    elif selected is not None:
+        matches = [o for o in candidates if o['observation_id'] == selected] if _text(selected) else []
+        if len(matches) == 1:
+            chosen = matches[0]
+        else:
+            w['reasons'].append('selection_required')
+    elif len(candidates) == 1:
+        chosen = candidates[0]
+    else:
+        w['reasons'].append('selection_required' if candidates else 'missing_wbc')
+    # Both components describe the same eligible baseline population.
+    shared = ('invalid_age', 'pediatric_points_not_defined', 'pregnancy_outside_scope',
+              'pregnancy_eligibility_unknown', 'acute_context_present', 'acute_context_unknown',
+              'invalid_chronic_inflammatory_condition', 'invalid_inflammation_affecting_treatment')
+    w['reasons'].extend(r for r in result['components']['hs_crp']['reasons'] if r in shared)
+    if chosen:
+        w['observation_id'] = chosen['observation_id']
+        w['reasons'].extend(chosen['errors'] + chosen['metadata_reasons'])
+        w['notices'] = deepcopy(chosen['notices'])
+        raw = chosen['observation']
+        if isinstance(raw, dict):
+            lower, upper = raw.get('lower_limit'), raw.get('upper_limit')
+            if not (chosen['reference_status'] != 'unavailable' and _finite(lower) and _finite(upper)):
+                w['reasons'].append('applicable_wbc_reference_range_required')
+            if chosen['qualifier'] != '=':
+                w['reasons'].append('bounded_result')
+            if not w['reasons']:
+                x = raw['value']
+                # Ratios are unit invariant. Zero cells never earns favorable points.
+                value = 100 * (x / lower if x < lower else max(0, 2 - x / upper) if x > upper else 1)
+                w.update(score=value, display_score=display_score(value), status='scored')
+    w['reasons'] = list(dict.fromkeys(w['reasons']))
+    result['components']['wbc'] = w
+    scores = {k: result['components'][k]['score'] for k in WEIGHTS}
+    reasons = [f'{k}:{r}' for k in WEIGHTS for r in result['components'][k]['reasons']]
+    if all(value is not None for value in scores.values()):
+        crp_id = result['components']['hs_crp']['observation_id']
+        crp = next(o for o in result['observations'] if o['observation_id'] == crp_id)
+        if crp['observation']['specimen_date'] != chosen['observation']['specimen_date']:
+            reasons.append('core_collection_dates_must_match')
+    total = sum(scores[k] * WEIGHTS[k] for k in WEIGHTS) if not reasons else None
+    result.update(domain_score=total, score=total, display_score=display_score(total),
+                  domain_label='Baseline inflammation marker profile',
+                  domain_aggregation_status='fixed_core_weighted_mean',
+                  status='scored' if total is not None else 'partial' if any(v is not None for v in scores.values()) else 'unavailable',
+                  weights=dict(WEIGHTS), marker_scores=scores,
+                  weighted_contributions={k: None if scores[k] is None else scores[k]*WEIGHTS[k] for k in WEIGHTS},
+                  reasons=reasons)
+    result['coverage'].update(required=list(WEIGHTS), scored=[k for k,v in scores.items() if v is not None],
+                              missing_or_unusable=[k for k,v in scores.items() if v is None],
+                              missing_requirements=reasons)
+    result['coverage']['context_markers_present'] = [k for k in result['coverage']['context_markers_present'] if k != 'wbc']
+    result['review_required'] = any(o['reference_status'] in ('low', 'high') or any(
+        n['code'] in ('laboratory_flag', 'crp_above_10', 'hs_crp_risk_enhancer') for n in o['notices'])
+        for o in result['observations'])
+    result['notices'][0] = {'code': 'limited_construct', 'text': 'Baseline hs-CRP and WBC profile only; not total inflammation, immune function or cardiovascular risk.'}
+    if result['review_required']:
+        _notice(result, 'marker_review_required', 'Review individual marker findings and laboratory flags even when the overall score is high.')
+    return result
 
 
 def main():

@@ -3,10 +3,10 @@
   "package_version": "0.1.2",
   "model_versions": {
     "metabolism": "metabolism-v0.2-age-extension-unadjusted",
-    "organ-stress": "liver-kidney-v0.1-provisional",
-    "inflammation": "inflammation-v0.1-provisional",
-    "nutrition": "nutrition-v0.1-provisional",
-    "system-stability": "system-stability-v0.1-reference-summary"
+    "organ-stress": "organ-stress-v0.2-provisional",
+    "inflammation": "inflammation-v0.2-provisional",
+    "nutrition": "nutrition-v0.2-provisional",
+    "system-stability": "system-stability-v0.2-provisional"
   },
   "model_status": "preliminary_not_clinically_validated",
   "overall_score": null,
@@ -210,15 +210,28 @@
     },
     "organ-stress": {
       "processing_status": "ok",
-      "model_version": "liver-kidney-v0.1-provisional",
+      "model_version": "organ-stress-v0.2-provisional",
       "result": {
-        "model_version": "liver-kidney-v0.1-provisional",
+        "model_version": "organ-stress-v0.2-provisional",
         "model_status": "preliminary_not_clinically_validated",
         "domain_score": null,
+        "score": null,
         "display_score": null,
-        "aggregation_status": "aggregation_not_defined",
+        "aggregation_status": "insufficient_core_data",
+        "weights": {
+          "egfr": 0.5,
+          "alt": 0.3,
+          "alp": 0.2
+        },
         "reasons": [
-          "aggregation_not_defined"
+          "pediatric_points_not_defined",
+          "kidney_unavailable",
+          "kidney:equation_age_outside_scope",
+          "kidney:pediatric_points_not_defined",
+          "liver_unavailable",
+          "liver:alt_unavailable",
+          "liver:alp_unavailable",
+          "liver:pediatric_points_not_defined"
         ],
         "flags": [
           {
@@ -234,12 +247,21 @@
             "text": "These components do not assess complete organ health. Normal enzymes or high points do not exclude disease."
           },
           {
+            "code": "weighted_average_limit",
+            "text": "The total is a weighted summary. An abnormal marker can coexist with a high total; review the individual results and laboratory flags."
+          },
+          {
+            "code": "liver_marker_specificity",
+            "text": "ALP can originate from bone as well as liver. These points summarize measurements, not the cause of an abnormal result."
+          },
+          {
             "code": "uacr_missing_or_unusable",
             "text": "Urine albumin information is missing or unusable; kidney-damage coverage is incomplete."
           },
           {
             "code": "alt_above_upper_limit",
-            "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity."
+            "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity.",
+            "marker": "alt"
           }
         ],
         "provenance": {
@@ -273,11 +295,11 @@
               "report_id": "synthetic-report",
               "specimen_date": "2026-09-01"
             },
-            "ast": {
-              "value": 40,
+            "alp": {
+              "value": 80,
               "unit": "U/L",
-              "lower_limit": 5,
-              "upper_limit": 40,
+              "lower_limit": 40,
+              "upper_limit": 120,
               "reference_range_applicable": true,
               "reliability": "valid",
               "report_id": "synthetic-report",
@@ -351,13 +373,14 @@
             "status": "alt_unavailable",
             "reasons": [
               "alt_unavailable",
-              "ast_unavailable",
+              "alp_unavailable",
               "pediatric_points_not_defined"
             ],
             "flags": [
               {
                 "code": "alt_above_upper_limit",
-                "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity."
+                "text": "ALT exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity.",
+                "marker": "alt"
               }
             ],
             "markers": {
@@ -389,9 +412,11 @@
                 "qualifier": "=",
                 "specimen_age_days": 23,
                 "available": true,
-                "upper_limit_ratio": 2.0
+                "upper_limit_ratio": 2.0,
+                "weight": 0.3,
+                "weighted_contribution": null
               },
-              "ast": {
+              "alp": {
                 "score": null,
                 "display_score": null,
                 "status": "pediatric_points_not_defined",
@@ -400,21 +425,23 @@
                 ],
                 "flags": [],
                 "observation": {
-                  "value": 40,
+                  "value": 80,
                   "unit": "U/L",
-                  "lower_limit": 5,
-                  "upper_limit": 40,
+                  "lower_limit": 40,
+                  "upper_limit": 120,
                   "reference_range_applicable": true,
                   "reliability": "valid",
                   "report_id": "synthetic-report",
                   "specimen_date": "2026-09-01"
                 },
-                "normalized_value": 40,
+                "normalized_value": 80,
                 "normalized_unit": "U/L",
                 "qualifier": "=",
                 "specimen_age_days": 23,
                 "available": true,
-                "upper_limit_ratio": 1.0
+                "upper_limit_ratio": 0.6666666666666666,
+                "weight": 0.2,
+                "weighted_contribution": null
               }
             },
             "coverage": {
@@ -425,20 +452,20 @@
                 "alt": [
                   "pediatric_points_not_defined"
                 ],
-                "ast": [
+                "alp": [
                   "pediatric_points_not_defined"
                 ]
               },
               "group_blocking_reasons": [
                 "alt_unavailable",
-                "ast_unavailable",
+                "alp_unavailable",
                 "pediatric_points_not_defined"
               ]
             }
           }
         },
         "optional_context": {
-          "alp": {
+          "ast": {
             "score": null,
             "display_score": null,
             "status": "missing",
@@ -589,18 +616,18 @@
               "alt": [
                 "pediatric_points_not_defined"
               ],
-              "ast": [
+              "alp": [
                 "pediatric_points_not_defined"
               ]
             },
             "group_blocking_reasons": [
               "alt_unavailable",
-              "ast_unavailable",
+              "alp_unavailable",
               "pediatric_points_not_defined"
             ]
           },
           "context": {
-            "alp": {
+            "ast": {
               "available": false,
               "usable_for_display": false,
               "reasons": [
@@ -656,17 +683,45 @@
                 "missing"
               ]
             }
-          }
+          },
+          "required": 3,
+          "scored": 0,
+          "missing_or_unusable": [
+            "egfr",
+            "alt",
+            "alp"
+          ],
+          "domain_blocking_reasons": [
+            "pediatric_points_not_defined",
+            "kidney_unavailable",
+            "kidney:equation_age_outside_scope",
+            "kidney:pediatric_points_not_defined",
+            "liver_unavailable",
+            "liver:alt_unavailable",
+            "liver:alp_unavailable",
+            "liver:pediatric_points_not_defined"
+          ]
         },
-        "status": "unavailable"
+        "marker_scores": {
+          "egfr": null,
+          "alt": null,
+          "alp": null
+        },
+        "weighted_contributions": {
+          "egfr": null,
+          "alt": null,
+          "alp": null
+        },
+        "status": "unavailable",
+        "review_required": true
       }
     },
     "inflammation": {
       "processing_status": "ok",
-      "model_version": "inflammation-v0.1-provisional",
+      "model_version": "inflammation-v0.2-provisional",
       "result": {
-        "model_version": "inflammation-v0.1-provisional",
-        "domain_label": "Inflammation markers",
+        "model_version": "inflammation-v0.2-provisional",
+        "domain_label": "Baseline inflammation marker profile",
         "evaluation_date": "2026-09-24",
         "input": {
           "person": {
@@ -703,8 +758,8 @@
           }
         },
         "domain_score": null,
-        "domain_aggregation_status": "limited_marker_coverage",
-        "status": "context_only",
+        "domain_aggregation_status": "fixed_core_weighted_mean",
+        "status": "unavailable",
         "components": {
           "hs_crp": {
             "score": null,
@@ -724,6 +779,25 @@
               }
             ],
             "observation_id": "synthetic-hscrp"
+          },
+          "wbc": {
+            "score": null,
+            "display_score": null,
+            "status": "unavailable",
+            "reasons": [
+              "pediatric_points_not_defined"
+            ],
+            "notices": [
+              {
+                "code": "laboratory_flag",
+                "text": "High (synthetic example range)"
+              },
+              {
+                "code": "outside_reference_range",
+                "text": "Result is high relative to the supplied applicable laboratory range."
+              }
+            ],
+            "observation_id": "wbc:0"
           }
         },
         "observations": [
@@ -793,29 +867,60 @@
           "hs_crp_present": true,
           "hs_crp_usable": false,
           "missing_requirements": [
-            "pediatric_points_not_defined"
+            "hs_crp:pediatric_points_not_defined",
+            "wbc:pediatric_points_not_defined"
           ],
-          "context_markers_present": [
+          "context_markers_present": [],
+          "required": [
+            "hs_crp",
+            "wbc"
+          ],
+          "scored": [],
+          "missing_or_unusable": [
+            "hs_crp",
             "wbc"
           ]
         },
         "notices": [
           {
-            "code": "limited_marker_coverage",
-            "text": "This component does not measure all inflammation or immune function."
+            "code": "limited_construct",
+            "text": "Baseline hs-CRP and WBC profile only; not total inflammation, immune function or cardiovascular risk."
           },
           {
             "code": "provisional_points",
             "text": "Experimental points are not clinically validated or a disease probability."
+          },
+          {
+            "code": "marker_review_required",
+            "text": "Review individual marker findings and laboratory flags even when the overall score is high."
           }
-        ]
+        ],
+        "score": null,
+        "display_score": null,
+        "weights": {
+          "hs_crp": 0.8,
+          "wbc": 0.2
+        },
+        "marker_scores": {
+          "hs_crp": null,
+          "wbc": null
+        },
+        "weighted_contributions": {
+          "hs_crp": null,
+          "wbc": null
+        },
+        "reasons": [
+          "hs_crp:pediatric_points_not_defined",
+          "wbc:pediatric_points_not_defined"
+        ],
+        "review_required": true
       }
     },
     "nutrition": {
       "processing_status": "ok",
-      "model_version": "nutrition-v0.1-provisional",
+      "model_version": "nutrition-v0.2-provisional",
       "result": {
-        "model_version": "nutrition-v0.1-provisional",
+        "model_version": "nutrition-v0.2-provisional",
         "domain_label": "Nutrition markers",
         "evaluation_date": "2026-09-24",
         "input": {
@@ -827,7 +932,10 @@
           "context": {
             "vitamin_d_supplementation": "unknown",
             "vitamin_d_treatment": "absent",
-            "relevant_conditions": "unknown"
+            "relevant_conditions": "unknown",
+            "iron_confounders": "absent",
+            "recent_iron_treatment_or_transfusion": "absent",
+            "b12_supplementation_or_treatment": "unknown"
           },
           "observations": {
             "vitamin_d": {
@@ -852,11 +960,37 @@
               "upper_limit": 50,
               "reference_range_applicable": true,
               "lab_flag": "Low (synthetic example range)"
+            },
+            "b12": {
+              "observation_id": "synthetic-b12",
+              "value": 150,
+              "unit": "pmol/L",
+              "analyte": "total_vitamin_b12",
+              "specimen_type": "serum",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 150,
+              "upper_limit": 600,
+              "reference_range_applicable": true
+            },
+            "ferritin": {
+              "observation_id": "synthetic-ferritin",
+              "value": 100,
+              "unit": "ug/L",
+              "analyte": "ferritin",
+              "specimen_type": "serum",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 15,
+              "upper_limit": 300,
+              "reference_range_applicable": true
             }
           }
         },
         "domain_score": null,
-        "domain_aggregation_status": "limited_marker_coverage",
+        "domain_aggregation_status": "fixed_core",
         "status": "unavailable",
         "components": {
           "vitamin_d": {
@@ -881,6 +1015,40 @@
               }
             ],
             "observation_id": "synthetic-vitamin-d"
+          },
+          "b12": {
+            "score": null,
+            "display_score": null,
+            "status": "unavailable",
+            "weight": 0.5,
+            "weighted_contribution": null,
+            "observation_id": "synthetic-b12",
+            "reasons": [
+              "pediatric_points_not_defined"
+            ],
+            "notices": [
+              {
+                "code": "b12_supplementation_or_treatment_unknown",
+                "text": "b12 supplementation or treatment is unknown; nutrient adequacy cannot be inferred."
+              }
+            ]
+          },
+          "ferritin": {
+            "score": null,
+            "display_score": null,
+            "status": "unavailable",
+            "weight": 0.5,
+            "weighted_contribution": null,
+            "observation_id": "synthetic-ferritin",
+            "reasons": [
+              "pediatric_points_not_defined"
+            ],
+            "notices": [
+              {
+                "code": "ferritin_interpretation_limit",
+                "text": "Ferritin can rise with inflammation or illness. Missing CRP does not exclude inflammation; these points do not establish iron sufficiency."
+              }
+            ]
           }
         },
         "observations": [
@@ -948,11 +1116,65 @@
             ],
             "reference_status": "low",
             "valid_measurement": true
+          },
+          {
+            "marker": "b12",
+            "observation_id": "synthetic-b12",
+            "observation": {
+              "observation_id": "synthetic-b12",
+              "value": 150,
+              "unit": "pmol/L",
+              "analyte": "total_vitamin_b12",
+              "specimen_type": "serum",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 150,
+              "upper_limit": 600,
+              "reference_range_applicable": true
+            },
+            "normalized_value": 150,
+            "normalized_unit": "pmol/L",
+            "qualifier": "=",
+            "specimen_age_days": 23,
+            "errors": [],
+            "metadata_reasons": [],
+            "reliability_reasons": [],
+            "notices": [],
+            "reference_status": "within_range",
+            "valid_measurement": true
+          },
+          {
+            "marker": "ferritin",
+            "observation_id": "synthetic-ferritin",
+            "observation": {
+              "observation_id": "synthetic-ferritin",
+              "value": 100,
+              "unit": "ug/L",
+              "analyte": "ferritin",
+              "specimen_type": "serum",
+              "report_id": "synthetic-report",
+              "specimen_date": "2026-09-01",
+              "reliability": "valid",
+              "lower_limit": 15,
+              "upper_limit": 300,
+              "reference_range_applicable": true
+            },
+            "normalized_value": 100,
+            "normalized_unit": "ug/L",
+            "qualifier": "=",
+            "specimen_age_days": 23,
+            "errors": [],
+            "metadata_reasons": [],
+            "reliability_reasons": [],
+            "notices": [],
+            "reference_status": "within_range",
+            "valid_measurement": true
           }
         ],
         "coverage": {
           "scored_component_count": 0,
-          "defined_component_count": 1,
+          "defined_component_count": 2,
           "available": [
             {
               "marker": "albumin",
@@ -969,34 +1191,65 @@
               "reasons": [
                 "pediatric_points_not_defined"
               ]
+            },
+            {
+              "marker": "b12",
+              "observation_id": "synthetic-b12",
+              "observation_index": 2,
+              "reasons": [
+                "pediatric_points_not_defined"
+              ]
+            },
+            {
+              "marker": "ferritin",
+              "observation_id": "synthetic-ferritin",
+              "observation_index": 3,
+              "reasons": [
+                "pediatric_points_not_defined"
+              ]
             }
           ],
           "missing": [],
           "missing_requirements": [
-            "pediatric_points_not_defined"
+            "b12:pediatric_points_not_defined",
+            "ferritin:pediatric_points_not_defined"
+          ],
+          "required": [
+            "b12",
+            "ferritin"
           ]
         },
         "notices": [
           {
             "code": "limited_nutrition_coverage",
-            "text": "This component does not measure overall nutrition or diet quality."
+            "text": "Nutrition summarizes B12 and ferritin only, not diet quality, protein intake or overall nutrient adequacy. Vitamin D is a separate optional component."
           },
           {
             "code": "provisional_points",
             "text": "Experimental points are not clinically validated or a disease probability."
           }
+        ],
+        "score": null,
+        "display_score": null,
+        "weights": {
+          "b12": 0.5,
+          "ferritin": 0.5
+        },
+        "reasons": [
+          "b12:pediatric_points_not_defined",
+          "ferritin:pediatric_points_not_defined"
         ]
       }
     },
     "system-stability": {
       "processing_status": "ok",
-      "model_version": "system-stability-v0.1-reference-summary",
+      "model_version": "system-stability-v0.2-provisional",
       "result": {
-        "model_version": "system-stability-v0.1-reference-summary",
+        "model_version": "system-stability-v0.2-provisional",
         "domain_label": "System Stability",
-        "result_label": "Electrolyte balance at collection",
+        "result_label": "Sodium-potassium profile at collection",
         "domain_score": null,
-        "domain_aggregation_status": "not_defined_reference_summary_only",
+        "domain_aggregation_status": "insufficient_information",
         "panel_status": "all_within_reference",
         "evaluation_date": "2026-09-24",
         "selection": {
@@ -1011,7 +1264,7 @@
           }
         },
         "request": {
-          "example_note": "Synthetic acceptance fixture. These reference intervals are not clinical defaults.",
+          "example_note": "Synthetic v0.2 acceptance fixture: sodium 140 and potassium 4 give 100.0/100. Chloride and CO2 support reference comparisons only. Supplied intervals are not clinical defaults.",
           "person": {
             "age": 16,
             "pregnancy_status": "not_applicable"
@@ -1108,12 +1361,24 @@
           "interpretable_count": 4,
           "expected_count": 4,
           "missing_markers": [],
-          "uninterpretable_markers": []
+          "uninterpretable_markers": [],
+          "required": 2,
+          "scored": 0,
+          "missing_or_unusable": [
+            "potassium",
+            "sodium"
+          ]
         },
         "reasons": [],
         "notices": [
           {
             "code": "single_collection_not_temporal_stability",
+            "marker": null,
+            "observation_id": null,
+            "selected": null
+          },
+          {
+            "code": "provisional_electrolyte_points_not_clinically_validated",
             "marker": null,
             "observation_id": null,
             "selected": null
@@ -1154,7 +1419,10 @@
             "source_flags": [],
             "errors": [],
             "reasons": [],
-            "notices": []
+            "notices": [],
+            "score_reasons": [
+              "adult_points_only"
+            ]
           },
           {
             "marker": "potassium",
@@ -1190,7 +1458,10 @@
             "source_flags": [],
             "errors": [],
             "reasons": [],
-            "notices": []
+            "notices": [],
+            "score_reasons": [
+              "adult_points_only"
+            ]
           },
           {
             "marker": "chloride",
@@ -1226,7 +1497,8 @@
             "source_flags": [],
             "errors": [],
             "reasons": [],
-            "notices": []
+            "notices": [],
+            "score_reasons": []
           },
           {
             "marker": "total_co2",
@@ -1263,11 +1535,35 @@
             "source_flags": [],
             "errors": [],
             "reasons": [],
-            "notices": []
+            "notices": [],
+            "score_reasons": []
           }
         ],
         "context_observations": [],
-        "unsupported_observations": []
+        "unsupported_observations": [],
+        "score": null,
+        "display_score": null,
+        "status": "unavailable",
+        "weights": {
+          "potassium": 0.5,
+          "sodium": 0.5
+        },
+        "marker_scores": {
+          "potassium": null,
+          "sodium": null
+        },
+        "weighted_contributions": {
+          "potassium": null,
+          "sodium": null
+        },
+        "score_reasons": [
+          "adult_points_only",
+          "sodium:adult_points_only",
+          "potassium:adult_points_only",
+          "potassium:missing_or_unusable_for_points",
+          "sodium:missing_or_unusable_for_points"
+        ],
+        "review_required": false
       }
     }
   }

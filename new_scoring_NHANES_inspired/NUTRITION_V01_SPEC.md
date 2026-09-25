@@ -1,3 +1,5 @@
+> Nutrition update, 25 September 2026: [v0.2](NUTRITION_V02_SPEC.md) now provides one provisional B12/ferritin total (50% each), with vitamin D separate and optional. Prior vitamin-D-only/null-total descriptions are historical.
+
 # Nutrition markers v0.1 — implementation specification
 
 Prepared 2026-09-24. **Stages 1–3 complete:** specification, [Python engine with acceptance tests](NUTRITION_ENGINE_README.md), and [descriptive behavior evaluation](nhanes_inventory/nutrition_v01_evaluation.md). Companion configuration: [nutrition_v01_parameters.json](nutrition_v01_parameters.json). Stage 4 dashboard integration is implemented; desktop/mobile visual verification and clinical validation remain outstanding. See [dashboard usage and checks](DASHBOARD_README.md). This follows the specification/engine/behavior-check/dashboard sequence in [NEXT_DOMAIN_PLAN.md](NEXT_DOMAIN_PLAN.md); the shared integration handoff remains later work. No deep learning is required.

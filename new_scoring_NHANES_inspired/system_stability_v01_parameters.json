@@ -1,38 +1,85 @@
 {
-  "model_version": "system-stability-v0.1-reference-summary",
+  "model_version": "system-stability-v0.2-provisional",
   "implementation_status": "engine_implemented",
   "source_review_date": "2026-09-24",
   "domain_label": "System Stability",
-  "result_label": "Electrolyte balance at collection",
-  "domain_score_enabled": false,
-  "marker_scores_enabled": false,
-  "domain_aggregation_status": "not_defined_reference_summary_only",
-  "core_markers": ["sodium", "potassium", "chloride", "total_co2"],
-  "context_markers": ["total_calcium", "ionized_calcium"],
+  "result_label": "Sodium-potassium profile at collection",
+  "domain_score_enabled": true,
+  "marker_scores_enabled": true,
+  "domain_aggregation_status": "fixed_weight_mean",
+  "core_markers": [
+    "sodium",
+    "potassium",
+    "chloride",
+    "total_co2"
+  ],
+  "context_markers": [
+    "total_calcium",
+    "ionized_calcium"
+  ],
   "expected_core_count": 4,
   "canonical_unit": "mmol/L",
-  "core_unit_multipliers": {"mmol/L": 1, "mEq/L": 1},
-  "calcium_unit_multipliers": {"mmol/L": 1, "mg/dL": 0.2495},
+  "core_unit_multipliers": {
+    "mmol/L": 1,
+    "mEq/L": 1
+  },
+  "calcium_unit_multipliers": {
+    "mmol/L": 1,
+    "mg/dL": 0.2495
+  },
   "default_reference_intervals": null,
   "required_reference_applicability": "confirmed",
   "reference_endpoints_inclusive": true,
   "requires_report_id": true,
   "requires_collection_date": true,
   "reject_future_collection_date": true,
-  "allowed_core_specimen_types": ["serum", "plasma"],
+  "allowed_core_specimen_types": [
+    "serum",
+    "plasma"
+  ],
   "selection_policy": "one_explicit_report_specimen_group_one_observation_per_marker",
   "allow_cross_collection_completion": false,
   "exact_values_must_be_positive_finite_numbers": true,
-  "supported_qualifiers": ["=", "<", "<=", ">", ">="],
+  "supported_qualifiers": [
+    "=",
+    "<",
+    "<=",
+    ">",
+    ">="
+  ],
   "bounded_result_policy": "classify_only_when_entire_positive_interval_in_one_category",
-  "reference_statuses": ["low", "within_reference", "high", "indeterminate_bound", "unavailable"],
-  "reliability_statuses": ["not_flagged", "unknown", "unreliable"],
+  "reference_statuses": [
+    "low",
+    "within_reference",
+    "high",
+    "indeterminate_bound",
+    "unavailable"
+  ],
+  "reliability_statuses": [
+    "not_flagged",
+    "unknown",
+    "unreliable"
+  ],
   "unknown_reliability_policy": "comparison_allowed_with_notice",
   "unreliable_policy": "withhold_derived_comparison_preserve_source_flags",
-  "recognized_source_flags": ["low", "high", "within_reference", "critical_low", "critical_high", "critical"],
+  "recognized_source_flags": [
+    "low",
+    "high",
+    "within_reference",
+    "critical_low",
+    "critical_high",
+    "critical"
+  ],
   "unmapped_source_flag_policy": "preserve_notice_block_all_within_reference",
   "source_only_flags_count_as_interpretable": false,
-  "panel_status_priority": ["source_critical_flag", "source_flag_conflict", "outside_reference", "all_within_reference", "partial", "unavailable"],
+  "panel_status_priority": [
+    "source_critical_flag",
+    "source_flag_conflict",
+    "outside_reference",
+    "all_within_reference",
+    "partial",
+    "unavailable"
+  ],
   "optional_markers_change_core_summary": false,
   "optional_marker_notices_visible_at_domain_level": true,
   "critical_thresholds": null,
@@ -50,5 +97,86 @@
     "total_calcium_mg_dl": "LBXSCA",
     "total_calcium_mmol_l": "LBDSCASI",
     "status": "local_inventory_only_codebook_and_applicability_review_pending"
-  }
+  },
+  "weights": {
+    "potassium": 0.5,
+    "sodium": 0.5
+  },
+  "curves": {
+    "potassium": [
+      [
+        2,
+        0
+      ],
+      [
+        2.5,
+        25
+      ],
+      [
+        3,
+        60
+      ],
+      [
+        3.5,
+        100
+      ],
+      [
+        5,
+        100
+      ],
+      [
+        5.5,
+        60
+      ],
+      [
+        6,
+        25
+      ],
+      [
+        6.5,
+        0
+      ]
+    ],
+    "sodium": [
+      [
+        120,
+        0
+      ],
+      [
+        125,
+        25
+      ],
+      [
+        130,
+        60
+      ],
+      [
+        135,
+        100
+      ],
+      [
+        145,
+        100
+      ],
+      [
+        150,
+        60
+      ],
+      [
+        155,
+        25
+      ],
+      [
+        160,
+        0
+      ]
+    ]
+  },
+  "scoring_core_markers": [
+    "sodium",
+    "potassium"
+  ],
+  "legacy_core_markers_note": "core_markers and expected_core_count describe the retained four-electrolyte reference summary, not the two-marker score. Scoring core is scoring_core_markers.",
+  "point_scope": "Age >=18 and explicitly not_pregnant or not_applicable; exact reliable selected serum/plasma results with applicable reference metadata.",
+  "curve_status": "Provisional display anchors and weights; not diagnostic or critical thresholds, not clinically validated."
 }

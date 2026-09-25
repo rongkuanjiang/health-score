@@ -35,15 +35,16 @@ def calcium(request, key='total_calcium'):
 
 
 class SystemStabilityTests(unittest.TestCase):
-    def test_complete_fixture_has_no_points(self):
+    def test_complete_fixture_has_domain_points(self):
         result = score(profile())
         self.assertEqual(result['panel_status'], 'all_within_reference')
         self.assertEqual(result['coverage'], {'present_count': 4, 'interpretable_count': 4,
-            'expected_count': 4, 'missing_markers': [], 'uninterpretable_markers': []})
+            'expected_count': 4, 'missing_markers': [], 'uninterpretable_markers': [],
+            'required': 2, 'scored': 2, 'missing_or_unusable': []})
         self.assertEqual(result['reasons'], [])
-        self.assertIsNone(result['domain_score'])
+        self.assertEqual(result['domain_score'], 100)
         for r in result['observations']:
-            self.assertIsNone(r['score'])
+            self.assertEqual(r['score'], 100 if r['marker'] in ('sodium', 'potassium') else None)
             self.assertEqual(r['reference_status'], 'within_reference')
             self.assertEqual(r['specimen_age_days'], 4)
 
@@ -310,7 +311,7 @@ class SystemStabilityTests(unittest.TestCase):
             capture_output=True, text=True, check=True)
         result = json.loads(completed.stdout)
         self.assertEqual(result['panel_status'], 'all_within_reference')
-        self.assertIsNone(result['domain_score'])
+        self.assertEqual(result['domain_score'], 100)
 
 
 if __name__ == '__main__':

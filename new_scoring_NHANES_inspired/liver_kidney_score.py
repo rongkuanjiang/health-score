@@ -1,4 +1,4 @@
-"""Provisional liver/kidney components. Standard library only; see the v0.1 spec."""
+"""Provisional fixed-weight organ-stress score; see ORGAN_STRESS_V02_SPEC.md."""
 from __future__ import annotations
 
 import argparse
@@ -297,10 +297,12 @@ def _liver(observations, context, point_gates, today):
         obs = raw if isinstance(raw, dict) else {}
         m = _observation(raw, today)
         r['markers'][key] = m
-        if obs.get('unit') not in ('U/L', 'IU/L'):
+        if obs.get('unit') not in _PARAMS['liver']['accepted_units'][key]:
             m['reasons'].append('unsupported_unit')
         elif _finite(obs.get('value')):
-            m.update(normalized_value=obs['value'], normalized_unit='U/L')
+            m.update(normalized_value=obs['value'], normalized_unit=obs['unit'])
+        if obs.get('reference_unit', obs.get('unit')) != obs.get('unit'):
+            m['reasons'].append('reference_unit_mismatch')
         if m['qualifier'] != '=':
             m['reasons'].append('censored_result_not_supported')
         lower, upper = obs.get('lower_limit'), obs.get('upper_limit')
@@ -323,25 +325,28 @@ def _liver(observations, context, point_gates, today):
                 _flag(m, key + '_above_upper_limit', f'{key.upper()} exceeds its applicable laboratory upper limit. Clinical interpretation is needed; points do not measure injury severity.')
         m['reasons'].extend(point_gates)
         _finish(m, points)
-        r['flags'].extend(m['flags'])
+        m['weight'] = _PARAMS['effective_weights'][key]
+        m['weighted_contribution'] = None if m['score'] is None else m['weight'] * m['score']
+        r['flags'].extend(dict(flag, marker=key) for flag in m['flags'])
         if m['score'] is None:
             r['reasons'].append(key + '_unavailable')
-    alt, ast = (observations.get(key) for key in ('alt', 'ast'))
-    a, b = (obs if isinstance(obs, dict) else {} for obs in (alt, ast))
-    if not _report_id(a) or not _report_id(b):
+    raw_markers = [observations.get(key) for key in _PARAMS['liver']['required_markers']]
+    records = [obs if isinstance(obs, dict) else {} for obs in raw_markers]
+    reports = [_report_id(obs) for obs in records]
+    if not all(reports):
         r['reasons'].append('matching_report_ids_required')
-    elif _report_id(a) != _report_id(b):
+    elif len(set(reports)) != 1:
         r['reasons'].append('report_id_mismatch')
-    da, db = a.get('specimen_date'), b.get('specimen_date')
-    if da is not None and db is not None and da != db:
+    dates = [obs.get('specimen_date') for obs in records]
+    if len({str(stamp) for stamp in dates if stamp is not None}) > 1:
         r['reasons'].append('specimen_date_mismatch')
-    if (da is None or db is None) and context.get('same_snapshot_confirmed') is not True:
+    if any(stamp is None for stamp in dates) and context.get('same_snapshot_confirmed') is not True:
         r['reasons'].append('same_snapshot_confirmation_required')
     r['reasons'].extend(point_gates)
-    r['coverage'] = {'available': sum(m['available'] for m in r['markers'].values()), 'required': 2,
+    r['coverage'] = {'available': sum(m['available'] for m in r['markers'].values()), 'required': len(records),
                      'scored': sum(m['score'] is not None for m in r['markers'].values()),
                      'missing_or_unusable': {key: m['reasons'] for key, m in r['markers'].items() if m['reasons']}}
-    points = min(m['score'] for m in r['markers'].values()) if not r['reasons'] else None
+    points = sum(_PARAMS['liver']['weights'][key] * m['score'] for key, m in r['markers'].items()) if not r['reasons'] else None
     _finish(r, points)
     r['coverage']['group_blocking_reasons'] = list(r['reasons'])
     return r
@@ -363,8 +368,10 @@ def score_liver_kidney(request, *, today=None):
     person, context = request.get('person', {}), request.get('context', {})
     observations = request.get('observations', {})
     r = {'model_version': VERSION, 'model_status': 'preliminary_not_clinically_validated',
-         'domain_score': None, 'display_score': None, 'aggregation_status': 'aggregation_not_defined',
-         'reasons': ['aggregation_not_defined'], 'flags': [], 'provenance': deepcopy(request)}
+         'domain_score': None, 'score': None, 'display_score': None,
+         'aggregation_status': 'insufficient_core_data',
+         'weights': deepcopy(_PARAMS['effective_weights']),
+         'reasons': [], 'flags': [], 'provenance': deepcopy(request)}
     gates = []
     age = person.get('age')
     if not _finite(age):
@@ -384,10 +391,12 @@ def score_liver_kidney(request, *, today=None):
     kidney = _kidney(observations, person, context, gates, today)
     liver = _liver(observations, context, gates, today)
     r['components'] = {'kidney': kidney, 'liver': liver}
+    _flag(r, 'weighted_average_limit', 'The total is a weighted summary. An abnormal marker can coexist with a high total; review the individual results and laboratory flags.')
+    _flag(r, 'liver_marker_specificity', 'ALP can originate from bone as well as liver. These points summarize measurements, not the cause of an abnormal result.')
     r['optional_context'] = {}
     supplied = request.get('optional_observations', {})
     for key in _PARAMS['context_only']:
-        raw = supplied.get(key)
+        raw = supplied.get(key, observations.get(key))
         m = _observation(raw, today, allow_zero=True)
         if isinstance(raw, dict) and (not isinstance(raw.get('unit'), str) or not raw['unit'].strip()):
             m['reasons'].append('unit_required')
@@ -407,7 +416,42 @@ def score_liver_kidney(request, *, today=None):
     for component in r['components'].values():
         r['flags'].extend(component['flags'])
     count = sum(c['score'] is not None for c in r['components'].values())
-    r['status'] = ('unavailable', 'partial', 'components_available')[count]
+    marker_scores = {'egfr': kidney['score'], **{key: m['score'] for key, m in liver['markers'].items()}}
+    r['marker_scores'] = marker_scores
+    r['weighted_contributions'] = {key: None if value is None else value * r['weights'][key] for key, value in marker_scores.items()}
+    r['coverage'].update(required=len(_PARAMS['required_markers']), scored=sum(value is not None for value in marker_scores.values()),
+                         missing_or_unusable=[key for key, value in marker_scores.items() if value is None])
+    r['reasons'].extend(gates)
+    for key, component in r['components'].items():
+        if component['score'] is None:
+            r['reasons'].append(key + '_unavailable')
+        r['reasons'].extend(key + ':' + reason for reason in component['reasons'])
+    # A total must not mix a recent organ panel with an unrelated old kidney result.
+    # Missing liver dates may be explicitly resolved within its matched report only.
+    kidney_raw = kidney['markers'][kidney['coverage']['selected_input']]['observation']
+    core_records = [kidney_raw, *(m['observation'] for m in liver['markers'].values())]
+    stamps = []
+    for obs in core_records:
+        stamp = obs.get('specimen_date') if isinstance(obs, dict) else None
+        if stamp is not None:
+            try:
+                stamps.append(date.fromisoformat(stamp))
+            except (ValueError, TypeError):
+                pass  # Invalid dates already block the component.
+    if count == 2:
+        if not any(isinstance(obs, dict) and obs.get('specimen_date') for obs in core_records[1:]):
+            r['reasons'].append('liver_date_required_for_total')
+        elif (max(stamps) - min(stamps)).days > _PARAMS['maximum_specimen_gap_days']:
+            r['reasons'].append('specimen_gap_exceeds_90_days')
+    r['reasons'] = list(dict.fromkeys(r['reasons']))
+    if count == 2 and not r['reasons']:
+        r['domain_score'] = sum(r['weighted_contributions'].values())
+        r['score'] = r['domain_score']
+        r['display_score'] = display_score(r['domain_score'])
+        r['aggregation_status'] = 'fixed_weight_complete_core'
+    r['status'] = 'scored' if r['domain_score'] is not None else ('partial' if r['coverage']['scored'] else 'unavailable')
+    r['coverage']['domain_blocking_reasons'] = list(r['reasons'])
+    r['review_required'] = any(f['code'] == 'laboratory_flag' or f['code'].endswith('_above_upper_limit') or f['code'] in ('egfr_below_60', 'egfr_below_15') for f in r['flags'])
     return _json_safe(r)
 
 

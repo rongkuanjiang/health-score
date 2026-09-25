@@ -1,17 +1,18 @@
-"""System Stability reference summary. Standard library only; no numerical score."""
+"""Provisional sodium-potassium profile with independent laboratory comparisons."""
 from __future__ import annotations
 
 import argparse
 from copy import deepcopy
 from datetime import date
-from decimal import Decimal
+from decimal import Decimal, ROUND_HALF_UP
 import json
 import math
 from pathlib import Path
 
-_PARAMS = json.loads(Path(__file__).with_name('system_stability_v01_parameters.json').read_text(encoding='utf-8'))
+_PARAMS = json.loads(Path(__file__).with_name('system_stability_v01_parameters.json').read_text(encoding='utf-8-sig'))
 VERSION = _PARAMS['model_version']
 CORE = tuple(_PARAMS['core_markers'])
+WEIGHTS = _PARAMS['weights']
 CONTEXT = tuple(_PARAMS['context_markers'])
 _CATEGORIES = ('low', 'within_reference', 'high')
 _CRITICAL = ('critical', 'critical_low', 'critical_high')
@@ -77,6 +78,65 @@ def _classify(value, lower, upper, qualifier):
     if (qualifier == '>' and value >= upper) or (qualifier == '>=' and value > upper):
         return 'high'
     return 'indeterminate_bound'
+
+
+def marker_points(marker, value):
+    """Piecewise linear prototype curves; endpoints clamp, never extrapolate."""
+    anchors = _PARAMS['curves'][marker]
+    if value <= anchors[0][0]:
+        return float(anchors[0][1])
+    for (lo, a), (hi, b) in zip(anchors, anchors[1:]):
+        if value <= hi:
+            return a + (b - a) * (value - lo) / (hi - lo)
+    return float(anchors[-1][1])
+
+
+def _points(result, request, records):
+    person = request.get('person', {})
+    person = person if isinstance(person, dict) else {}
+    age = person.get('age')
+    eligibility = []
+    if not _positive(age):
+        eligibility.append('valid_age_required')
+    elif age < 18:
+        eligibility.append('adult_points_only')
+    pregnancy = person.get('pregnancy_status')
+    if pregnancy == 'pregnant':
+        eligibility.append('pregnancy_outside_point_scope')
+    elif pregnancy not in ('not_pregnant', 'not_applicable'):
+        eligibility.append('pregnancy_eligibility_required')
+    scores = {m: None for m in WEIGHTS}
+    point_reasons = list(eligibility)
+    for r in records:
+        r['score_reasons'] = []
+        if r['marker'] not in WEIGHTS:
+            continue
+        blocked = list(eligibility) + r['errors'] + r['reasons']
+        if r['qualifier'] != '=':
+            blocked.append('exact_result_required_for_points')
+        if isinstance(r['observation'], dict) and r['observation'].get('reliability') != 'not_flagged':
+            blocked.append('usable_reliability_required_for_points')
+        r['score_reasons'] = list(dict.fromkeys(blocked))
+        if not blocked and r['selected']:
+            r['score'] = marker_points(r['marker'], r['normalized_value'])
+            scores[r['marker']] = r['score']
+        if r['selected']:
+            point_reasons.extend(f"{r['marker']}:{code}" for code in r['score_reasons'])
+    missing = [m for m, s in scores.items() if s is None]
+    point_reasons.extend(f'{m}:missing_or_unusable_for_points' for m in missing)
+    contributions = {m: None if s is None else s * WEIGHTS[m] for m, s in scores.items()}
+    total = None if missing else sum(contributions.values())
+    result.update(domain_score=total, score=total,
+                  display_score=None if total is None else str(Decimal(str(total)).quantize(Decimal('0.1'), rounding=ROUND_HALF_UP)),
+                  status='scored' if total is not None else 'partial' if any(s is not None for s in scores.values()) else 'unavailable',
+                  domain_aggregation_status='fixed_weight_mean' if total is not None else 'insufficient_information',
+                  weights=deepcopy(WEIGHTS), marker_scores=scores, weighted_contributions=contributions,
+                  score_reasons=list(dict.fromkeys(point_reasons)))
+    result['coverage'].update(required=len(WEIGHTS), scored=len(WEIGHTS)-len(missing), missing_or_unusable=missing)
+    result['review_required'] = any(r['selected'] and (r['source_flags'] or r['reference_status'] in ('low', 'high') or
+        (r['score'] is not None and r['score'] < 100)) for r in records)
+    result['notices'].append({'code': 'provisional_electrolyte_points_not_clinically_validated', 'marker': None,
+                              'observation_id': None, 'selected': None})
 
 
 def _observation(marker, raw, selected, blockers, today):
@@ -203,7 +263,7 @@ def score_system_stability(request, *, today=None):
 
     `today` is a date; defaults to host date. Invalid envelope shapes raise
     ValueError. Malformed observations and selection metadata return reasons.
-    All numerical score fields are None by design. See ENGINE_README.
+    Adult nonpregnant point scope is separate from laboratory comparison scope.
     """
     _json_shape(request)
     if not isinstance(request, dict):
@@ -312,6 +372,7 @@ def score_system_stability(request, *, today=None):
               'observations': [r for r in records if r['marker'] in CORE],
               'context_observations': [r for r in records if r['marker'] in CONTEXT],
               'unsupported_observations': unsupported}
+    _points(result, request, records)
     return _safe(result)
 
 

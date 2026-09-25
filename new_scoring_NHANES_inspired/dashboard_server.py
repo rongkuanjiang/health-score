@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 from metabolism_score import score_metabolism, _PARAMS, _curve, VERSION
 from liver_kidney_score import score_liver_kidney
-from nutrition_score import score_nutrition, _curve as nutrition_curve, VERSION as NUTRITION_VERSION
+from nutrition_score import score_nutrition, _curve as nutrition_curve, VERSION as NUTRITION_VERSION, CORE as NUTRITION_CORE, WEIGHTS as NUTRITION_WEIGHTS
 from system_stability_score import score_system_stability
-from inflammation_score import score_inflammation, _curve as inflammation_curve, VERSION as INFLAMMATION_VERSION
+from inflammation_score import score_inflammation, _curve as inflammation_curve, VERSION as INFLAMMATION_VERSION, WEIGHTS as INFLAMMATION_WEIGHTS
 from health_scorer_api import score_request, loads_request, metadata
 
 ROOT = Path(__file__).with_name('dashboard')
@@ -67,9 +67,16 @@ class Handler(BaseHTTPRequestHandler):
             return self.reply(200, model_explanation())
         if self.path == '/model/nutrition':
             return self.reply(200, {'model_version': NUTRITION_VERSION,
+                                   'weights': NUTRITION_WEIGHTS, 'curves': NUTRITION_CORE,
+                                   'required': list(NUTRITION_WEIGHTS),
+                                   'collection_policy': 'same_report_date_and_specimen',
                                    'points': [[i / 2, nutrition_curve(i / 2)] for i in range(1, 251)]})
         if self.path == '/model/inflammation':
             return self.reply(200, {'model_version': INFLAMMATION_VERSION,
+                                   'weights': INFLAMMATION_WEIGHTS,
+                                   'required': list(INFLAMMATION_WEIGHTS),
+                                   'collection_policy': 'same_date',
+                                   'wbc_curve': '100*x/lower below lower; 100 within range; max(0,100*(2-x/upper)) above upper',
                                    'points': [[i / 20, inflammation_curve(i / 20)] for i in range(1, 201)]})
         asset = ASSETS.get(self.path)
         if not asset:

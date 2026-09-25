@@ -15,14 +15,14 @@
   const reliability = [['unknown', 'Unknown'], ['valid', 'Laboratory valid'], ['invalid', 'Laboratory invalid']];
   const equations = [['unknown', 'Unknown / not stated'], ['ckd_epi_2021_creatinine', 'CKD-EPI 2021 creatinine'], ['ckd_epi_2021_creatinine_cystatin_c', 'CKD-EPI 2021 creatinine + cystatin C'], ['ckid_u25_creatinine', 'CKiD U25 creatinine']];
   const qualifiers = [['=', 'Exact (=)'], ['>', 'Greater than (>)'], ['>=', 'At least (≥)'], ['<', 'Less than (<)'], ['<=', 'At most (≤)']];
-  const core = [['egfr', 'Reported eGFR'], ['creatinine', 'Creatinine'], ['height', 'Height'], ['alt', 'ALT'], ['ast', 'AST']];
-  const optional = [['alp', 'ALP'], ['bilirubin', 'Bilirubin'], ['ggt', 'GGT'], ['albumin', 'Albumin'], ['bun', 'BUN'], ['uric_acid', 'Uric acid'], ['uacr', 'Urine albumin-to-creatinine ratio (UACR)'], ['cystatin_c', 'Cystatin C']];
+  const core = [['egfr', 'Reported eGFR'], ['creatinine', 'Creatinine'], ['height', 'Height'], ['alt', 'ALT'], ['alp', 'ALP']];
+  const optional = [['ast', 'AST'], ['bilirubin', 'Bilirubin'], ['ggt', 'GGT'], ['albumin', 'Albumin'], ['bun', 'BUN'], ['uric_acid', 'Uric acid'], ['uacr', 'Urine albumin-to-creatinine ratio (UACR)'], ['cystatin_c', 'Cystatin C']];
   const names = Object.fromEntries([...core, ...optional]);
   const metadata = id => `<div class="grid">${input(`${id}-report`, 'Report identifier', 'text', 'maxlength="120"')}${input(`${id}-date`, 'Specimen date', 'date')}${select(`${id}-reliability`, 'Laboratory reliability', reliability)}${input(`${id}-flag`, 'Laboratory flag (optional)', 'text', 'maxlength="120"')}</div>`;
   const measurement = (id, label, units, extra = '') => `<fieldset class="organ-measurement" id="organ-${id}-fields"><legend>${label}</legend><div class="grid">${input(id, 'Reported value')}${select(`${id}-unit`, 'Unit', units.map(u => [u, u]))}${extra}</div>${metadata(id)}</fieldset>`;
   root.innerHTML = `
-    <div class="section-head domain-intro"><div><h2>Organ stress</h2><p>Liver &amp; kidney v0.1 · Separate component scores; no combined organ-stress score.</p></div></div>
-    <div class="toolbar">${select('profile', 'Try a synthetic profile', [['blank', 'Manual entry'], ['example', 'Worked example · kidney 87.5 / liver 75.0'], ['bound', 'eGFR >60 · range only'], ['plateau', 'eGFR ≥90 · plateau score'], ['missing', 'Missing AST · partial results'], ['creatinine', 'Calculate from creatinine'], ['pregnant', 'Pregnancy · points withheld'], ['younger', 'Age 16 · U25 estimate only']])}<button id="organ-load" type="button">Load organ profile</button><button id="organ-reset" type="button" class="secondary">Clear organ stress</button></div>
+    <div class="section-head domain-intro"><div><h2>Organ stress</h2><p>Liver &amp; kidney v0.2 · One weighted domain score out of 100.</p></div></div>
+    <div class="toolbar">${select('profile', 'Try a synthetic profile', [['blank', 'Manual entry'], ['example', 'Worked example · overall 86.3'], ['bound', 'eGFR >60 · range only'], ['plateau', 'eGFR ≥90 · plateau score'], ['missing', 'Missing ALP · partial results'], ['creatinine', 'Calculate from creatinine'], ['pregnant', 'Pregnancy · points withheld'], ['younger', 'Age 16 · U25 estimate only']])}<button id="organ-load" type="button">Load organ profile</button><button id="organ-reset" type="button" class="secondary">Clear organ stress</button></div>
     <p id="organ-profile-note" class="muted">Manual entry. These inputs are independent of metabolism; nothing is saved after a reload.</p>
     <form id="organ-form">
       <section class="panel"><h3>Person and kidney context</h3><div class="grid">
@@ -41,17 +41,17 @@
           ${measurement('height', 'Height · required for U25', ['cm', 'm'])}
         </fieldset>
       </section>
-      <section class="panel"><h3>Liver enzyme inputs</h3><p class="muted">Copy each report’s reference limits. Use applicability supplied by the laboratory or importer; leave it unconfirmed if unknown. ALT and AST need matching report identifiers; conflicting dates cannot be combined.</p>
-        ${['alt', 'ast'].map(id => measurement(id, id.toUpperCase(), ['U/L', 'IU/L'], input(`${id}-lower`, 'Laboratory lower limit') + input(`${id}-upper`, 'Laboratory upper limit')) + check(`${id}-applicable`, `${id.toUpperCase()} report or importer confirms the reference range applies to this result`)).join('')}
-        ${check('snapshot', 'I confirm ALT and AST are from the same snapshot if a specimen date is missing.')}
+      <section class="panel"><h3>Liver enzyme inputs</h3><p class="muted">Copy each report’s reference limits. Use applicability supplied by the laboratory or importer; leave it unconfirmed if unknown. ALT and ALP need matching report identifiers; conflicting dates cannot be combined.</p>
+        ${['alt', 'alp'].map(id => measurement(id, id.toUpperCase(), ['U/L', 'IU/L'], input(`${id}-lower`, 'Laboratory lower limit') + input(`${id}-upper`, 'Laboratory upper limit')) + check(`${id}-applicable`, `${id.toUpperCase()} report or importer confirms the reference range applies to this result`)).join('')}
+        ${check('snapshot', 'I confirm ALT and ALP are from the same snapshot if a specimen date is missing.')}
       </section>
       <section class="panel"><details><summary>Optional laboratory context · no point contribution</summary><p class="muted">Leave tests you do not have blank. Values and laboratory flags are retained as context; this prototype does not interpret their units or assign them points.</p>
         ${optional.map(([id, label]) => `<fieldset class="organ-measurement"><legend>${label}</legend><div class="grid">${input(id, 'Reported value')}${input(`${id}-unit`, 'Unit exactly as reported', 'text', 'maxlength="80"')}${select(`${id}-qualifier`, 'Result qualifier', qualifiers)}</div>${metadata(id)}</fieldset>`).join('')}
       </details></section>
-      <button id="organ-calculate" type="submit">Calculate organ-stress components</button><p id="organ-error" role="alert"></p>
+      <button id="organ-calculate" type="submit">Calculate organ-stress score</button><p id="organ-error" role="alert"></p>
     </form>
     <section class="panel" aria-labelledby="organ-result-heading"><h3 id="organ-result-heading">Organ-stress snapshot</h3><p id="organ-state" role="status">Add bloodwork or load a synthetic profile.</p><div id="organ-results"><p class="empty">Kidney and liver results will appear here.</p></div>
-      <details class="education"><summary>How these components work</summary><div class="education-body"><h4>Kidney filtration estimate</h4><p>The existing Python engine uses the reported eGFR or calculates it from creatinine using the selected equation. A bounded report can yield a possible point range instead of an exact score. No midpoint is substituted. High points do not establish absence of kidney disease; urine albumin adds separate context.</p><h4>Liver enzyme pattern</h4><p>ALT and AST are compared with their applicable laboratory reference intervals. The liver component takes the lower of the two marker scores. Both markers must be usable and from the same snapshot. A missing or below-range marker can prevent a combined liver score.</p><h4>Coverage and interpretation</h4><p>Missing information is not a zero score. Pregnancy, age and other eligibility rules can withhold points. Laboratory flags remain visible. The two components are not averaged, and no overall health score is defined. These preliminary model points are not organ-function percentages or disease probabilities.</p></div></details>
+      <details class="education"><summary>How this score works</summary><div class="education-body"><h4>Kidney filtration estimate</h4><p>The existing Python engine uses the reported eGFR or calculates it from creatinine using the selected equation. A bounded report can yield a possible point range instead of an exact score. No midpoint is substituted. High points do not establish absence of kidney disease; urine albumin adds separate context.</p><h4>Liver enzyme pattern</h4><p>ALT and ALP are compared with their applicable laboratory reference intervals. The liver summary weights ALT at 60% and ALP at 40%. The domain total weights eGFR at 50%, ALT at 30% and ALP at 20%. Both markers must be usable and from the same snapshot. A missing or below-range marker can prevent a combined liver score.</p><h4>Coverage and interpretation</h4><p>Missing information is not a zero score. Pregnancy, age and other eligibility rules can withhold points. Laboratory flags remain visible. All three core inputs are required for the domain total, with kidney and liver dates within 90 days. Missing weights are never redistributed. A high average can coexist with an abnormal marker; review individual results. These preliminary model points are not organ-function percentages or disease probabilities.</p></div></details>
     </section>`;
 
   const number = id => el(id).value.trim() === '' ? null : Number(el(id).value);
@@ -81,7 +81,7 @@
   function buildRequest() {
     const route = el('route').value;
     const request = {person: {age: number('age'), pregnancy_status: el('pregnancy').value, equation_sex: el('sex').value}, context: {kidney_route: route, dialysis: el('dialysis').value, acute_kidney_injury: el('aki').value, same_snapshot_confirmed: el('snapshot').checked}, observations: {}, optional_observations: {}};
-    const keys = route === 'reported' ? ['egfr', 'alt', 'ast'] : ['creatinine', 'alt', 'ast'];
+    const keys = route === 'reported' ? ['egfr', 'alt', 'alp'] : ['creatinine', 'alt', 'alp'];
     if (route === 'creatinine') {
       request.context.creatinine_equation = el('calculation-equation').value;
       if (request.context.creatinine_equation === 'ckid_u25_creatinine') keys.push('height');
@@ -90,15 +90,15 @@
       const obs = observation(id); if (!obs) continue;
       if (id === 'egfr') obs.equation = el('egfr-equation').value;
       if (id === 'creatinine') Object.assign(obs, {calibration: el('calibration').value, calibration_provenance: el('calibration-provenance').value.trim(), assay_method: el('assay').value});
-      if (id === 'alt' || id === 'ast') Object.assign(obs, {lower_limit: number(`${id}-lower`), upper_limit: number(`${id}-upper`), reference_range_applicable: el(`${id}-applicable`).checked});
+      if (id === 'alt' || id === 'alp') Object.assign(obs, {lower_limit: number(`${id}-lower`), upper_limit: number(`${id}-upper`), reference_range_applicable: el(`${id}-applicable`).checked});
       request.observations[id] = obs;
     }
     for (const [id] of optional) { const obs = observation(id); if (obs) request.optional_observations[id] = obs; }
     return request;
   }
   const reasonText = reason => ({
-    matching_report_ids_required: 'Enter a report identifier for both ALT and AST.',
-    report_id_mismatch: 'ALT and AST report identifiers differ; liver grouping is withheld.',
+    matching_report_ids_required: 'Enter a report identifier for both ALT and ALP.',
+    report_id_mismatch: 'ALT and ALP report identifiers differ; liver grouping is withheld.',
     same_snapshot_confirmation_required: 'Confirm the liver snapshot when a specimen date is missing.',
     invalid_or_missing_reference_limits: 'Enter valid laboratory lower and upper reference limits.',
     reference_range_applicability_required: 'Confirm that this reference interval applies to this person and assay.',
@@ -109,9 +109,14 @@
     window.dispatchEvent(new CustomEvent('scorer-result', {detail: {domain: 'organ-stress', result: result}}));
     el('state').textContent = `${humanize(result.status)} · ${result.model_version}`;
     const out = el('results'); out.replaceChildren();
-    out.append(node('p', 'No combined organ-stress score is defined. Kidney and liver components are shown separately.', 'notice'));
+    const total = node('article', '', 'card');
+    total.append(node('h3', 'Organ-stress score'), node('strong', result.display_score ?? '—'), node('p', result.domain_score === null ? 'Overall score unavailable' : 'out of 100 model points'));
+    total.append(node('p', `${result.coverage.scored}/${result.coverage.required} core markers scored · eGFR 50%, ALT 30%, ALP 20%`));
+    if (result.review_required) total.append(node('p', 'Abnormal result or laboratory flag present. Review individual markers even when the total is high.', 'notice'));
+    for (const reason of result.reasons) total.append(node('p', reasonText(reason), 'notice'));
+    out.append(total);
     const cards = node('div', '', 'organ-components');
-    for (const [key, title] of [['kidney', 'Kidney filtration estimate'], ['liver', 'Liver enzyme pattern']]) {
+    for (const [key, title] of [['kidney', 'Kidney filtration estimate'], ['liver', 'Liver marker summary']]) {
       const c = result.components[key], card = node('article', '', 'card');
       card.append(node('h3', title), node('strong', c.display_score ?? '—'), node('p', c.score === null ? 'Point score unavailable' : 'out of 100 model points'), node('p', humanize(c.status)));
       if (key === 'kidney') {
@@ -121,7 +126,7 @@
         if (c.status === 'scored_from_bound') card.append(node('p', 'This bound falls entirely on the model’s constant plateau; the eGFR itself remains a bound.', 'notice'));
         card.append(node('p', `Route: ${humanize(c.route)} · Equation: ${humanize(c.equation ?? 'unknown')}`));
         card.append(node('p', `Selected input: ${names[c.coverage.selected_input]} · ${c.coverage.available ? 'Observation supplied' : 'Observation missing'}`));
-      } else card.append(node('p', `Coverage: ${c.coverage.available}/2 observations supplied · ${c.coverage.scored}/2 markers scored`));
+      } else card.append(node('p', `Coverage: ${c.coverage.available}/${c.coverage.required} observations supplied · ${c.coverage.scored}/${c.coverage.required} markers scored`));
       for (const reason of c.reasons) card.append(node('p', reasonText(reason), 'notice'));
       for (const [id, marker] of Object.entries(c.markers)) {
         const detail = node('details', ''), raw = marker.observation ?? result.provenance.observations[id];
@@ -139,11 +144,11 @@
     }
     out.append(cards, node('h3', 'Interpretation notices'));
     for (const flag of result.flags) out.append(node('p', `${flag.marker ? (names[flag.marker] ?? flag.marker) + ': ' : ''}${flag.text}`, 'notice'));
-    const supplied = Object.entries(result.optional_context).filter(([id]) => Object.hasOwn(result.provenance.optional_observations ?? {}, id));
+    const supplied = Object.entries(result.optional_context).filter(([id]) => Object.hasOwn(result.provenance.optional_observations ?? {}, id) || Object.hasOwn(result.provenance.observations ?? {}, id));
     if (supplied.length) {
       out.append(node('h3', 'Optional laboratory context'));
       for (const [id, marker] of supplied) {
-        const raw = result.provenance.optional_observations[id];
+        const raw = marker.observation;
         out.append(node('p', `${names[id]}: ${raw.qualifier ?? '='} ${raw.value} ${raw.unit} · ${humanize(marker.status)} · no points`));
         for (const reason of marker.reasons) out.append(node('p', reasonText(reason), 'notice'));
       }
@@ -173,16 +178,16 @@
     el('profile-note').textContent = profile === 'blank' ? 'Manual entry. Nothing is saved after a reload.' : 'Synthetic demonstration values and reference intervals. Replace with actual report details for manual entry.';
     if (profile === 'blank') return;
     const today = new Date(), date = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    const values = {age: 40, pregnancy: 'not_pregnant', sex: 'male', dialysis: 'no', aki: 'no', egfr: 75, 'egfr-equation': 'ckd_epi_2021_creatinine', alt: 80, ast: 40, 'alt-lower': 5, 'alt-upper': 40, 'ast-lower': 5, 'ast-upper': 40};
+    const values = {age: 40, pregnancy: 'not_pregnant', sex: 'male', dialysis: 'no', aki: 'no', egfr: 75, 'egfr-equation': 'ckd_epi_2021_creatinine', alt: 80, alp: 80, 'alt-lower': 5, 'alt-upper': 40, 'alp-lower': 40, 'alp-upper': 120};
     if (profile === 'bound') Object.assign(values, {egfr: 60, 'egfr-qualifier': '>'});
     if (profile === 'plateau') Object.assign(values, {egfr: 90, 'egfr-qualifier': '>='});
-    if (profile === 'missing') values.ast = '';
+    if (profile === 'missing') values.alp = '';
     if (profile === 'pregnant') values.pregnancy = 'pregnant';
     if (profile === 'creatinine' || profile === 'younger') Object.assign(values, {route: 'creatinine', creatinine: 88.4, calibration: 'idms_traceable', assay: 'enzymatic'});
     if (profile === 'younger') Object.assign(values, {age: 16, 'calculation-equation': 'ckid_u25_creatinine', height: 170});
     for (const [id, value] of Object.entries(values)) el(id).value = value;
     for (const [id] of core) { el(`${id}-report`).value = 'synthetic-report'; el(`${id}-date`).value = date; el(`${id}-reliability`).value = 'valid'; }
-    el('alt-applicable').checked = true; el('ast-applicable').checked = true;
+    el('alt-applicable').checked = true; el('alp-applicable').checked = true;
     updateRoute(); el('form').requestSubmit();
   });
   updateRoute();

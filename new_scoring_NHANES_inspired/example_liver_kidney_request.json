@@ -1,22 +1,43 @@
 {
   "snapshot_id": "synthetic-liver-kidney-example",
-  "person": {"age": 40, "equation_sex": "male", "pregnancy_status": "not_pregnant"},
-  "context": {"dialysis": "no", "acute_kidney_injury": "no"},
+  "person": {
+    "age": 40,
+    "equation_sex": "male",
+    "pregnancy_status": "not_pregnant"
+  },
+  "context": {
+    "dialysis": "no",
+    "acute_kidney_injury": "no"
+  },
   "observations": {
     "egfr": {
-      "value": 75, "unit": "mL/min/1.73m2", "qualifier": "=",
-      "equation": "ckd_epi_2021_creatinine", "reliability": "valid",
-      "report_id": "synthetic-report", "specimen_date": "2026-09-01"
+      "value": 75,
+      "unit": "mL/min/1.73m2",
+      "qualifier": "=",
+      "equation": "ckd_epi_2021_creatinine",
+      "reliability": "valid",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01"
     },
     "alt": {
-      "value": 80, "unit": "U/L", "lower_limit": 5, "upper_limit": 40,
-      "reference_range_applicable": true, "reliability": "valid",
-      "report_id": "synthetic-report", "specimen_date": "2026-09-01"
+      "value": 80,
+      "unit": "U/L",
+      "lower_limit": 5,
+      "upper_limit": 40,
+      "reference_range_applicable": true,
+      "reliability": "valid",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01"
     },
-    "ast": {
-      "value": 40, "unit": "U/L", "lower_limit": 5, "upper_limit": 40,
-      "reference_range_applicable": true, "reliability": "valid",
-      "report_id": "synthetic-report", "specimen_date": "2026-09-01"
+    "alp": {
+      "value": 80,
+      "unit": "U/L",
+      "lower_limit": 40,
+      "upper_limit": 120,
+      "reference_range_applicable": true,
+      "reliability": "valid",
+      "report_id": "synthetic-report",
+      "specimen_date": "2026-09-01"
     }
   }
 }

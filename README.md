@@ -4,6 +4,10 @@ The current five-domain dashboard is in [new_scoring_NHANES_inspired](new_scorin
 
 ## Run the dashboard
 
+For company hosting, follow [Vercel deployment instructions](new_scoring_NHANES_inspired/VERCEL_DEPLOYMENT.md).
+The hosted adapter is prepared for integration testing; it has not yet been deployed.
+Set Vercel's Root Directory to `new_scoring_NHANES_inspired`.
+
 1. Clone this repository, or choose **Code > Download ZIP** and extract it.
 2. Install Python 3.10 or newer if needed.
 3. Open a terminal in the repository folder and run:

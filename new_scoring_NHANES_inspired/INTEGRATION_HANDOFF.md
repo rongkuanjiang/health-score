@@ -57,7 +57,7 @@ $response.domains.metabolism.result.display_score
 
 The existing `/score`, `/score/metabolism`, `/score/organ-stress`, `/score/inflammation`, `/score/nutrition` and `/score/system-stability` routes remain dashboard compatibility adapters returning raw engine results. New integrations should use `/api/v1/score` or `score_request`.
 
-HTTP server binds to loopback only. It checks Host and Origin, serves allowlisted assets, disables response caching, has no CORS and accepts JSON bodies up to 65,536 bytes. A separately hosted frontend should call its own backend, which imports `score_request`; it cannot call this demo cross-origin. This standard-library server is for local development, not public hosting.
+The local HTTP server binds to loopback only. It checks Host and Origin, serves allowlisted assets, disables response caching, has no CORS and accepts JSON bodies up to 65,536 bytes. A separately hosted frontend should call its own backend, which imports `score_request` or calls the authenticated hosted API; it cannot call the local demo cross-origin. The separate [Vercel adapter](VERCEL_DEPLOYMENT.md) serves the dashboard and scoring routes on one hosted origin. Deployment is pending company access.
 
 ## Shared request contract
 

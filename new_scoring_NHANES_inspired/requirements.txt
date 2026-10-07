@@ -1,0 +1,2 @@
+# Hosted and local dashboard use only the Python standard library.
+# The repository-root requirements.txt belongs to the separate legacy scorer.

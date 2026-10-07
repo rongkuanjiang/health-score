@@ -4,6 +4,9 @@
 
 # Health scorer prototype — current status
 
+Hosting: [Vercel setup and app integration](VERCEL_DEPLOYMENT.md) covers the hosted
+dashboard demo and authenticated backend API. Deployment remains pending company access.
+
 All five domains have specifications, Python engines and dashboard panels. Historical descriptive NHANES evaluations are available; the new organ-stress v0.2 composite has not undergone a population evaluation. The shared integration package is now implemented. Start with [INTEGRATION_HANDOFF.md](INTEGRATION_HANDOFF.md) for setup, versioned API contracts, examples, rendering rules and deployment responsibilities.
 
 Dashboard 0.1.2 starts with a basic questionnaire, followed by one unified dashboard: five prominent score cards, a pentagon chart and inline expandable biomarker sections. Calculate all domains together or load a full synthetic example. Domain shortcuts open sections without hiding the dashboard or other domains. The chart preserves existing score scopes and missing-data gaps; it does not create new scores. Restart the server and refresh the browser after updating.

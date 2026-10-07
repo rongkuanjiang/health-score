@@ -35,7 +35,10 @@ def create_examples():
 
 def build(output_dir=None):
     create_examples()
-    files = ['health_scorer_api.py', 'dashboard_server.py', 'integration_schema.json',
+    files = ['hosted_dashboard.py', 'api/index.py', 'vercel.json', '.python-version',
+             'requirements.txt', '.env.example', 'public/.gitkeep', 'VERCEL_DEPLOYMENT.md',
+             'test_hosted_dashboard.py', 'smoke_hosted.py',
+             'health_scorer_api.py', 'dashboard_server.py', 'integration_schema.json',
              'integration_client.mjs', 'INTEGRATION_HANDOFF.md', 'RELEASE_REVIEW.md',
              'README.md', 'DASHBOARD_README.md', 'ENGINE_README.md',
              'AGE_EXTENSION_AND_DETAILS.md', 'HBA1C_V01.md', 'hba1c_evidence_brief.md',

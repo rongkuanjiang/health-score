@@ -8,7 +8,10 @@ const path = require('node:path');
 const {spawn} = require('node:child_process');
 const {JSDOM} = (() => { try { return require('jsdom'); } catch { return require('../tmp/dashboard_dom_tests/node_modules/jsdom'); } })();
 const python = process.env.PYTHON_EXE || path.resolve(__dirname, '../.venv/Scripts/python.exe');
-const server = spawn(python, ['-u', '-c', "from dashboard_server import Handler, ThreadingHTTPServer; s=ThreadingHTTPServer(('127.0.0.1',0),Handler); print(s.server_port,flush=True); s.serve_forever()"], {cwd: __dirname, stdio: ['ignore', 'pipe', 'inherit']});
+const serverCode = process.env.DASHBOARD_TRANSPORT === 'hosted'
+  ? "import os; from http.server import ThreadingHTTPServer; from hosted_dashboard import HostedHandler; s=ThreadingHTTPServer(('127.0.0.1',0),HostedHandler); os.environ.update(SCORER_MODE='demo', SCORER_ALLOWED_HOSTS='127.0.0.1:'+str(s.server_port), SCORER_FRAME_ANCESTORS=''); print(s.server_port,flush=True); s.serve_forever()"
+  : "from dashboard_server import Handler, ThreadingHTTPServer; s=ThreadingHTTPServer(('127.0.0.1',0),Handler); print(s.server_port,flush=True); s.serve_forever()";
+const server = spawn(python, ['-u', '-c', serverCode], {cwd: __dirname, stdio: ['ignore', 'pipe', 'inherit']});
 let dom;
 async function until(fn) {
   const end = Date.now() + 5000;

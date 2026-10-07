@@ -39,6 +39,8 @@ def model_explanation():
 
 
 class Handler(BaseHTTPRequestHandler):
+    frame_ancestors = "'none'"
+
     def log_message(self, *_):
         pass  # Do not log entered health information.
 
@@ -50,12 +52,17 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.send_header('Cache-Control', 'no-store')
         self.send_header('X-Content-Type-Options', 'nosniff')
-        self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'")
+        self.send_header('Content-Security-Policy', f"default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors {self.frame_ancestors}; base-uri 'none'")
+        self.send_header('Referrer-Policy', 'no-referrer')
         self.end_headers()
-        self.wfile.write(body)
+        if self.command != 'HEAD':
+            self.wfile.write(body)
 
     def valid_host(self):
         return self.headers.get('Host') in (f'127.0.0.1:{self.server.server_port}', f'localhost:{self.server.server_port}')
+
+    def valid_origin(self):
+        return self.headers.get('Origin') in (None, f'http://127.0.0.1:{self.server.server_port}', f'http://localhost:{self.server.server_port}')
 
     def do_GET(self):
         if not self.valid_host():
@@ -86,10 +93,8 @@ class Handler(BaseHTTPRequestHandler):
         self.reply(200, (ROOT / name).read_bytes(), mime)
 
     def do_POST(self):
-        origin = self.headers.get('Origin')
-        allowed = (None, f'http://127.0.0.1:{self.server.server_port}', f'http://localhost:{self.server.server_port}')
-        if not self.valid_host() or origin not in allowed:
-            return self.reply(403, {'error': 'Local dashboard requests only.'})
+        if not self.valid_host() or not self.valid_origin():
+            return self.reply(403, {'error': 'Request host or origin is not allowed.'})
         shared_api = self.path == '/api/v1/score'
         if self.path not in SCORERS and not shared_api:
             return self.reply(404, {'error': 'Not found'})
